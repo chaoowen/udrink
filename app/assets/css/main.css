@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-m-cream text-m-gray font-sans;
+  }
+}
+
+.bubble-btn {
+  @apply rounded-bubble px-6 py-3 transition-all duration-300 active:scale-95;
+}

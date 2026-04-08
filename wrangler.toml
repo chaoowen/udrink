@@ -1,0 +1,8 @@
+name = "udrink"
+compatibility_date = "2024-04-03"
+# pages_build_output_dir = "./.output/public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "udrink-db"
+database_id = "local" # Use 'local' or leave blank for local simulation
