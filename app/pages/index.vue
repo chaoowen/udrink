@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 
+import { DRINK_CATEGORIES } from '~/constants/drink'
+
 const uiStore = useUIStore()
 
 const { data: latestReviews, refresh } = await useFetch('/api/reviews/latest')
 
-const categories = ['純茶', '奶茶', '鮮奶茶', '果茶', '奶蓋', '其他', '無咖啡因']
+const categories = DRINK_CATEGORIES
 
 onMounted(() => {
   // Stagger animation for review cards
@@ -22,8 +24,8 @@ onMounted(() => {
 
 <template>
   <ViewsHomeHero />
-  <ViewsHomeSearch />
   <div class="flex flex-col gap-8 py-4">
+    <ViewsHomeSearch />
     <!-- Categories -->
     <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
       <button 
@@ -39,7 +41,7 @@ onMounted(() => {
     <div class="flex flex-col gap-6">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold text-m-gray">最新點評</h2>
-        <button @click="refresh" class="text-xs text-m-pink font-bold">↻ 重新整理</button>
+        <button @click="() => refresh()" class="text-xs text-m-pink font-bold">↻ 重新整理</button>
       </div>
 
       <div v-if="latestReviews && latestReviews.length > 0" class="grid gap-6">
@@ -53,7 +55,7 @@ onMounted(() => {
       <div v-else class="py-20 text-center flex flex-col items-center gap-4">
         <div class="text-6xl grayscale opacity-20">🥤</div>
         <p class="text-m-gray opacity-40 font-bold">還沒有人發表評價喔...</p>
-        <BubbleButton variant="pink" @click="uiStore.openReviewModal">成為第一個！</BubbleButton>
+        <CommonButton variant="pink" @click="uiStore.openReviewModal">成為第一個！</CommonButton>
       </div>
     </div>
   </div>

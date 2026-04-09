@@ -6,7 +6,7 @@
 
 @layer base {
   body {
-    @apply bg-m-cream text-m-gray font-sans;
+    @apply bg-m-cream text-m-gray font-sans tracking-widest font-medium;
     font-family: 'Zen Maru Gothic', sans-serif;
   }
 }

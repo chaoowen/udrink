@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  variant?: 'blue' | 'pink' | 'green' | 'gray' | 'cream'
+  variant?: 'blue' | 'pink' | 'green' | 'gray' | 'cream' | 'purple'
   size?: 'sm' | 'md' | 'lg'
   isBubble?: boolean
 }>()
@@ -10,7 +10,8 @@ const colors = {
   pink: 'bg-m-pink text-m-gray',
   green: 'bg-m-green text-m-gray',
   gray: 'bg-m-gray text-white',
-  cream: 'bg-m-cream text-m-gray'
+  cream: 'bg-m-cream text-m-gray',
+  purple: 'bg-m-purple text-m-gray'
 }
 
 const sizes = {

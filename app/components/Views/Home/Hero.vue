@@ -1,14 +1,4 @@
 <script setup lang="ts">
-// 使用 Vite 的 import.meta.glob 批量導入 assets 中的圖標
-// 這能確保開發環境與生產環境都能正確解析動態路徑
-const glob = import.meta.glob('~/assets/images/icons/*.png', { eager: true, import: 'default' })
-
-// 將圖標配置與導入後的路徑進行映射
-const getIconSrc = (name: string): string => {
-  const path = Object.keys(glob).find(key => key.includes(name))
-  return path ? (glob[path] as string) : ''
-}
-
 const icons = [
   { name: 'cloude-1.png', class: '-top-10 left-0 md:-left-12 w-20 md:w-32 xl:w-44 hover:-translate-x-12', delay: '0s', duration: '7s' },
   { name: 'cloude-2.png', class: '-top-8 right-0 md:-right-16 w-16 md:w-24 xl:w-36 hover:translate-x-12', delay: '1.5s', duration: '6s' },
@@ -21,17 +11,10 @@ const icons = [
 </script>
 
 <template>
-  <div class="w-full py-20 space-y-8 bg-m-purple relative overflow-visible">
-    <div class="w-[280px] md:w-[400px] xl:w-[600px] mx-auto relative">
-      <!-- Floating Icons -->
-      <img 
-        v-for="(icon, index) in icons"
-        :key="index"
-        :src="getIconSrc(icon.name)"
-        class="absolute z-10 animate-float transition-all duration-700 ease-out hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
-        :class="icon.class"
-        :style="{ animationDelay: icon.delay, animationDuration: icon.duration }"
-      />
+  <div class="w-full pt-20 pb-10 space-y-8 bg-m-purple relative overflow-visible">
+    <div class="w-[280px] md:w-[400px] xl:w-[600px] mx-auto relative px-4">
+      <!-- Floating Icons 🎉 -->
+      <FloatingIcons :icons="icons" />
 
       <!-- Main Image -->
       <img 

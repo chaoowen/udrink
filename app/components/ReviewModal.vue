@@ -131,13 +131,13 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
           </div>
         </div>
 
-        <BubbleButton 
+        <CommonButton 
           variant="pink" 
           @click="handleSubmit" 
           :disabled="isSubmitting"
         >
           {{ isSubmitting ? '提交中...' : '發布評價' }}
-        </BubbleButton>
+        </CommonButton>
       </div>
     </div>
   </Teleport>

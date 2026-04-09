@@ -20,7 +20,7 @@ export default <Partial<Config>>{
       },
       boxShadow: {
         // 像雲朵一樣輕盈的陰影
-        'soft': '0 10px 40px -10px rgba(187, 170, 135, 0.63)',
+        'soft': '0 6px 20px -10px rgba(187, 170, 135, 0.63)',
         // 內凹陰影，用於搜尋框或被按下的按鈕
         'inner-soft': 'inset 0 4px 8px 0 rgba(109, 103, 91, 0.05)',
       },

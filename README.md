@@ -56,7 +56,7 @@ npx wrangler pages dev --compatibility-date=2024-04-03 --d1 DB=udrink-db
 udrink/
 ├── app/                  # 前端核心
 │   ├── assets/           # CSS 與靜態資源
-│   ├── components/       # 可複用組件 (ReviewCard, BubbleButton, etc.)
+│   ├── components/       # 可複用組件 (ReviewCard, CommonButton, etc.)
 │   ├── middleware/       # 路由中間件 (Auth check)
 │   ├── pages/            # 頁面路由 (index, login, profile)
 │   └── stores/           # Pinia 狀態庫 (user, ui)
