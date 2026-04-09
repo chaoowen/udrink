@@ -1,28 +1,13 @@
 <script setup lang="ts">
-const userStore = useUserStore()
-const uiStore = useUIStore()
-
-onMounted(() => {
-  userStore.initUser()
-})
 </script>
 
 <template>
-  <div class="min-h-screen bg-m-cream pb-32">
+  <div class="relative min-h-screen bg-m-cream pb-32">
     <NuxtRouteAnnouncer />
     
-    <!-- Top Bar -->
-    <header class="p-6 flex justify-between items-center">
-      <NuxtLink to="/" class="text-2xl font-black text-m-gray tracking-tighter">
-        UD<span class="text-m-pink">RINK</span>
-      </NuxtLink>
-      
-      <div v-if="userStore.isAuthenticated" class="text-sm font-bold text-m-gray">
-        嗨，{{ userStore.username || '飲友' }}
-      </div>
-    </header>
+    <LayoutHeader />
 
-    <main class="max-w-xl mx-auto px-6">
+    <main class="pt-16">
       <NuxtPage />
     </main>
 
@@ -34,18 +19,13 @@ onMounted(() => {
       <NuxtLink to="/" class="nav-item p-4 text-m-gray hover:text-m-pink transition-colors">
         <span class="text-2xl">🏠</span>
       </NuxtLink>
-      
-      <button 
-        @click="uiStore.openReviewModal" 
-        class="w-16 h-16 bg-m-pink rounded-full shadow-lg flex items-center justify-center text-white text-3xl active:scale-95 transition-transform -translate-y-4 border-4 border-m-cream"
-      >
-        +
-      </button>
 
       <NuxtLink to="/profile" class="nav-item p-4 text-m-gray hover:text-m-pink transition-colors">
         <span class="text-2xl">👤</span>
       </NuxtLink>
     </nav>
+
+    <ViewsReviewButton />
   </div>
 </template>
 

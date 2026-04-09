@@ -21,13 +21,10 @@ onMounted(() => {
 </script>
 
 <template>
+  <ViewsHome />
   <div class="flex flex-col gap-8 py-4">
     <!-- Hero Search -->
     <div class="flex flex-col gap-4">
-      <h1 class="text-4xl font-black text-m-gray leading-tight">
-        今天想喝什麼？<br/>
-        <span class="text-m-pink">搜搜看就知道。</span>
-      </h1>
       
       <div class="relative">
         <input 
