@@ -21,22 +21,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <ViewsHome />
+  <ViewsHomeHero />
+  <ViewsHomeSearch />
   <div class="flex flex-col gap-8 py-4">
-    <!-- Hero Search -->
-    <div class="flex flex-col gap-4">
-      
-      <div class="relative">
-        <input 
-          v-model="uiStore.searchQuery"
-          type="text"
-          placeholder="搜尋飲品或店名..."
-          class="w-full bg-white p-6 rounded-bubble shadow-lg border-none focus:ring-4 focus:ring-m-blue/30 outline-none text-lg transition-all"
-        />
-        <div class="absolute right-6 top-1/2 -translate-y-1/2 text-2xl">🔍</div>
-      </div>
-    </div>
-
     <!-- Categories -->
     <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
       <button 

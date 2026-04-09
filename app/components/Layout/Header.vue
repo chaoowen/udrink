@@ -17,6 +17,9 @@ onMounted(() => {
       <div v-if="userStore.isAuthenticated" class="text-sm font-bold text-m-gray">
         嗨，{{ userStore.username || '飲友' }}
       </div>
+      <NuxtLink v-else to="/login">
+        <img src="~/assets/images/icons/text-login.png" alt="" class="h-10">
+      </NuxtLink>
     </div>
   </header>
 </template>
