@@ -23,7 +23,7 @@ const sizes = {
 
 <template>
   <button
-    class="bubble-btn font-medium flex items-center justify-center gap-2 active:scale-95 transition-transform"
+    class="bubble-btn font-medium flex items-center justify-center gap-2 active:scale-90 hover:opacity-90 transition-all duration-300"
     :class="[
       colors[variant || 'blue'],
       sizes[size || 'md'],

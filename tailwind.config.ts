@@ -7,11 +7,20 @@ export default <Partial<Config>>{
         sans: ['"Zen Maru Gothic"', 'sans-serif'],
       },
       colors: {
-        'm-purple': '#E6E6FA',
-        'm-blue': '#D6E4F0',
+        'm-purple': {
+          DEFAULT: '#E6E6FA',
+          dark: '#b8a6db',
+        },
+        'm-blue': {
+          DEFAULT: '#D6E4F0',
+          dark: '#accae3',
+        },
         'm-pink': '#F9E1E0',
         'm-green': '#D4E2D4',
-        'm-cream': '#FDF5E6',
+        'm-cream': {
+          DEFAULT: '#FDF5E6',
+          dark: '#ebcc91',
+        },
         'm-gray': '#9A9483',
       },
       borderRadius: {

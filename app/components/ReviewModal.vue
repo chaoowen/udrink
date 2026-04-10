@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import starIcon from '~/assets/images/icons/star.png'
 import gsap from 'gsap'
+
 const uiStore = useUIStore()
 const userStore = useUserStore()
 
@@ -8,9 +10,9 @@ const overlay = ref(null)
 
 const form = ref({
   drink_id: 'sample-drink-id', // Placeholder - will be selectable later
-  drink_name: '',
   shop_name: '',
-  rating: 5,
+  drink_name: '',
+  rating: 4,
   sugar_ice: '',
   comment: ''
 })
@@ -83,52 +85,50 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
         class="bg-white w-full max-w-md rounded-bubble p-8 shadow-xl flex flex-col gap-6"
       >
         <div class="flex justify-between items-center">
-          <h2 class="text-2xl font-bold text-m-gray">來寫點評吧！</h2>
+          <h2 class="text-2xl font-bold text-m-gray">新增喝貨點評</h2>
           <button @click="handleClose" class="text-m-gray opacity-40 hover:opacity-100">✕</button>
         </div>
 
         <div class="flex flex-col gap-4">
           <!-- TODO: Add Drink Search Suggestion here -->
-          <div>
-            <label class="text-xs font-bold text-m-gray mb-1 block">飲品名稱</label>
-            <input 
-              v-model="form.drink_name"
-              placeholder="例如：波霸奶茶"
-              class="w-full bg-m-cream/50 p-3 rounded-2xl border-none focus:ring-2 focus:ring-m-blue outline-none"
-            />
-          </div>
+           <CommonInputField 
+            v-model="form.shop_name"
+            label="店家名稱"
+            placeholder="例如：青山"
+          />
+
+          <CommonInputField 
+            v-model="form.drink_name"
+            label="飲品名稱"
+            placeholder="例如：波霸奶茶"
+          />
 
           <div>
             <label class="text-xs font-bold text-m-gray mb-1 block">評分</label>
-            <div class="flex gap-2">
+            <div class="flex gap-1">
               <button 
                 v-for="i in 5" :key="i"
                 @click="form.rating = i"
-                class="w-10 h-10 rounded-full transition-transform active:scale-90"
-                :class="i <= form.rating ? 'bg-m-pink shadow-md' : 'bg-gray-100'"
+                class="w-10 h-10 transition-all active:scale-90"
+                :class="i <= form.rating ? 'opacity-100' : 'opacity-20 grayscale'"
               >
+                <img :src="starIcon" alt="" class="w-full h-full object-contain" />
               </button>
             </div>
           </div>
 
-          <div>
-            <label class="text-xs font-bold text-m-gray mb-1 block">推薦組合 (糖冰)</label>
-            <input 
-              v-model="form.sugar_ice"
-              placeholder="例如：微糖微冰"
-              class="w-full bg-m-cream/50 p-3 rounded-2xl border-none focus:ring-2 focus:ring-m-blue outline-none"
-            />
-          </div>
+          <CommonInputField 
+            v-model="form.sugar_ice"
+            label="推薦組合 (糖冰)"
+            placeholder="例如：微糖微冰"
+          />
 
-          <div>
-            <label class="text-xs font-bold text-m-gray mb-1 block">短評</label>
-            <textarea 
-              v-model="form.comment"
-              placeholder="喝起來如何？"
-              rows="3"
-              class="w-full bg-m-cream/50 p-3 rounded-2xl border-none focus:ring-2 focus:ring-m-blue outline-none resize-none"
-            ></textarea>
-          </div>
+          <CommonInputField 
+            v-model="form.comment"
+            label="短評"
+            placeholder="喝起來如何？"
+            is-textarea
+          />
         </div>
 
         <CommonButton 

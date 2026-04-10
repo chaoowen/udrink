@@ -11,7 +11,7 @@ const icons = [
 </script>
 
 <template>
-  <div class="w-full pt-20 pb-10 space-y-8 bg-m-purple relative overflow-visible">
+  <div class="w-full pt-32 pb-20 space-y-8 bg-m-purple relative overflow-visible">
     <div class="w-[280px] md:w-[400px] xl:w-[600px] mx-auto relative px-4">
       <!-- Floating Icons 🎉 -->
       <FloatingIcons :icons="icons" />
@@ -24,9 +24,14 @@ const icons = [
       />
     </div>
 
-    <div class="space-y-2 text-2xl md:text-4xl font-bold text-m-gray text-center relative z-20">
-      <p>不知道今天要喝什麼？</p>
-      <p>搜搜看就知道！</p>
+    <div class="space-y-2 text-2xl md:text-4xl font-bold text-center relative z-20">
+      <p class="text-m-purple-dark">飲料總是喝過就忘？</p>
+      <div class="flex items-center justify-center gap-2">
+        <span class="text-m-purple-dark">讓</span>
+        <img src="~/assets/images/icons/text-1.png" alt="" class="h-10" />
+        <img src="~/assets/images/icons/text-4.png" alt="" class="h-10" />
+        <span class="text-m-purple-dark">來記得</span>
+      </div>
     </div>
   </div>
 </template>
