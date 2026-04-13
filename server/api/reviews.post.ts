@@ -1,10 +1,6 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const userId = getCookie(event, 'udrink_user_id');
-
-  if (!userId) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' });
-  }
+  const userId = getCookie(event, 'udrink_user_id') || null;
 
   const { drink_id, rating, sugar_ice, comment } = body;
 

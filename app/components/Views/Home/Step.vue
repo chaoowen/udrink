@@ -9,19 +9,19 @@ const steps = [
     id: 1,
     icon: Icon3,
     title: '查詢評價',
-    description: '點餐總是猶豫不決？快看大家都推薦什麼'
+    description: '點餐總是猶豫不決？來參考喝貨們的專業清單'
   },
   {
     id: 2,
     icon: Icon1,
     title: '建立評價',
-    description: '遇到好喝的飲料下次就忘？紀錄起來，給自己看也造福大眾'
+    description: '遇到好喝的飲料下次就忘？紀錄起來，自己看也造福大眾'
   },
   {
     id: 3,
     icon: Icon2,
     title: '登入記得你',
-    description: '登入即可紀錄你的喝貨足跡，再也不怕忘記好味道'
+    description: '登入即可紀錄你的喝貨足跡，飲料永流傳'
   },
 ]
 

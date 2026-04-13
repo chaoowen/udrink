@@ -4,6 +4,7 @@ const router = useRouter()
 
 const username = ref('')
 const isLoading = ref(false)
+const loginBtn = ref(null)
 
 const handleLogin = async () => {
   if (!username.value || username.value.length < 2) {
@@ -16,12 +17,15 @@ const handleLogin = async () => {
   isLoading.value = false
 
   if (result.success) {
+    // Only play the celebratory expansion if login was successful!
+    if (loginBtn.value) {
+      await (loginBtn.value as any).playTransition()
+    }
     router.push('/')
   } else {
     alert('登入失敗，請稍後再試。')
   }
 }
-
 // If already logged in, redirect
 onMounted(() => {
   if (userStore.isAuthenticated) {
@@ -61,9 +65,11 @@ const loginIcons = [
       />
       
       <CommonButton 
+        ref="loginBtn"
         variant="purple" 
         @click="handleLogin"
         :disabled="isLoading"
+        manual
       >
         {{ isLoading ? '登入中...' : '出發！' }}
       </CommonButton>

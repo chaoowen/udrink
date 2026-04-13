@@ -136,7 +136,7 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
           @click="handleSubmit" 
           :disabled="isSubmitting"
         >
-          {{ isSubmitting ? '提交中...' : '發布評價' }}
+          {{ isSubmitting ? '提交中...' : '發佈評價' }}
         </CommonButton>
       </div>
     </div>
