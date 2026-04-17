@@ -3,13 +3,11 @@ import starIcon from '~/assets/images/icons/star.png'
 import gsap from 'gsap'
 
 const uiStore = useUIStore()
-const userStore = useUserStore()
 
 const modalContent = ref(null)
 const overlay = ref(null)
 
 const form = ref({
-  drink_id: 'sample-drink-id', // Placeholder - will be selectable later
   shop_name: '',
   drink_name: '',
   rating: 4,
@@ -31,30 +29,34 @@ const handleClose = () => {
   })
 }
 
-const handleSubmit = async () => {
-  if (!userStore.isAuthenticated) {
-    alert('請先登入喔！')
-    return
+const resetForm = () => {
+  form.value = {
+    shop_name: '',
+    drink_name: '',
+    rating: 4,
+    sugar_ice: '',
+    comment: ''
   }
-  
+}
+
+const handleSubmit = async () => {
   isSubmitting.value = true
   try {
-    const { data } = await useFetch('/api/reviews', {
+    await $fetch('/api/reviews', {
       method: 'POST',
       body: {
-        drink_id: form.value.drink_id,
+        shop_name: form.value.shop_name,
+        drink_name: form.value.drink_name,
         rating: form.value.rating,
         sugar_ice: form.value.sugar_ice,
         comment: form.value.comment
       }
     })
-    
-    if (data.value) {
-      alert('評價成功！')
-      handleClose()
-    }
+    resetForm()
+    handleClose()
   } catch (err) {
     console.error(err)
+    alert('提交失敗，請稍後再試')
   } finally {
     isSubmitting.value = false
   }
@@ -85,8 +87,8 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
         class="bg-white w-full max-w-md rounded-bubble p-8 shadow-xl flex flex-col gap-6"
       >
         <div class="flex justify-between items-center">
-          <h2 class="text-2xl font-bold text-m-gray">新增喝貨點評</h2>
-          <button @click="handleClose" class="text-m-gray opacity-40 hover:opacity-100">✕</button>
+          <h2 class="text-2xl font-medium">新增喝貨點評</h2>
+          <button @click="handleClose" class="opacity-80 hover:opacity-100">✕</button>
         </div>
 
         <div class="flex flex-col gap-4">
@@ -104,7 +106,7 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
           />
 
           <div>
-            <label class="text-xs font-bold text-m-gray mb-1 block">評分</label>
+            <label class="text-sm font-bold text-m-gray mb-1 block">評分</label>
             <div class="flex gap-1">
               <button 
                 v-for="i in 5" :key="i"

@@ -2,6 +2,17 @@
 import { DRINK_CATEGORIES } from '~/constants/drink'
 
 const uiStore = useUIStore()
+const router = useRouter()
+
+const handleSearch = () => {
+  if (uiStore.searchQuery.trim()) {
+    router.push({ path: '/search', query: { q: uiStore.searchQuery } })
+  }
+}
+
+const handleCategoryClick = (category: string) => {
+  router.push(`/category/${category}`)
+}
 </script>
 
 <template>
@@ -16,18 +27,18 @@ const uiStore = useUIStore()
       placeholder="搜尋飲品或店名..."
       icon="ph:magnifying-glass-bold"
       class="w-full md:w-[400px]"
+      @enter="handleSearch"
     />
 
-    <div class="flex gap-3 overflow-x-auto no-scrollbar">
+    <div class="flex gap-3 overflow-x-auto no-scrollbar max-w-full px-4">
       <CommonButton 
         v-for="category in DRINK_CATEGORIES" 
         :key="category"
         variant="blue"
+        @click="handleCategoryClick(category)"
       >
         {{ category }}
       </CommonButton>
     </div>
-
-
   </div>
 </template>

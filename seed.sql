@@ -14,8 +14,8 @@ INSERT INTO users (id, username) VALUES ('u1', 'Kevin');
 INSERT INTO users (id, username) VALUES ('u2', '飲料控小明');
 
 -- Seed Reviews
-INSERT INTO reviews (id, user_id, drink_id, rating, sugar_ice, comment) 
-VALUES ('r1', 'u1', 'd1', 5, '微糖微冰', '波霸超 Q，奶味很重，經典不敗！');
+INSERT INTO reviews (id, user_id, shop_id, shop_name, drink_name, rating, sugar_ice, comment)
+VALUES ('r1', 'u1', 's1', '五十嵐', '波霸奶茶', 5, '微糖微冰', '波霸超 Q，奶味很重，經典不敗！');
 
-INSERT INTO reviews (id, user_id, drink_id, rating, sugar_ice, comment) 
-VALUES ('r2', 'u2', 'd3', 4, '冰塊固定', '夏天喝這款超爽快，酸甜比例剛剛好。');
+INSERT INTO reviews (id, user_id, shop_id, shop_name, drink_name, rating, sugar_ice, comment)
+VALUES ('r2', 'u2', 's2', '7-ELEVEN', '西西里風檸檬氣泡咖啡', 4, '冰塊固定', '夏天喝這款超爽快，酸甜比例剛剛好。');

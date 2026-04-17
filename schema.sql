@@ -25,13 +25,14 @@ CREATE TABLE IF NOT EXISTS drinks (
 CREATE TABLE IF NOT EXISTS reviews (
     id TEXT PRIMARY KEY,
     user_id TEXT,
-    drink_id TEXT NOT NULL,
+    shop_id TEXT,                   -- nullable，未來可與 shops 表關聯做歸類
+    shop_name TEXT NOT NULL,
+    drink_name TEXT NOT NULL,
     rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
     sugar_ice TEXT,
     comment TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (drink_id) REFERENCES drinks(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Favorites Table
