@@ -5,9 +5,9 @@ const { data: latestReviews, refresh } = await useFetch('/api/reviews/latest')
 
 <template>
   <div class="flex flex-col gap-6">
-    <h2 class="text-xl font-bold text-m-gray text-center">最新點評</h2>
+    <h2 class="text-4xl font-bold text-center">最新點評</h2>
 
-    <div v-if="latestReviews && latestReviews.length > 0" class="grid gap-6">
+    <div v-if="latestReviews && latestReviews.length > 0" class="grid gap-6 grid-cols-1 md:grid-cols-2 max-w-[1200px] mx-auto">
       <ReviewCard 
         v-for="review in latestReviews" 
         :key="review.id" 

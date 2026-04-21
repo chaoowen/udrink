@@ -88,16 +88,16 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
     >
       <div 
         ref="modalContent"
-        class="bg-white w-full max-w-md rounded-bubble p-8 shadow-xl flex flex-col gap-6"
+        class="bg-white w-full max-w-2xl rounded-bubble shadow-xl flex flex-col max-h-[calc(100dvh-10rem)]"
       >
-        <div class="flex justify-between items-center">
-          <h2 class="text-2xl font-medium">新增喝貨點評</h2>
+        <div class="flex justify-between items-center px-8 pt-8 pb-4 shrink-0">
+          <h2 class="text-lg md:text-2xl font-medium">新增喝貨點評</h2>
           <button @click="handleClose" class="opacity-80 hover:opacity-100">✕</button>
         </div>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 overflow-y-auto px-8 py-2">
           <!-- TODO: Add Drink Search Suggestion here -->
-           <CommonInputField 
+          <CommonInputField
             v-model="form.shop_name"
             label="店家名稱"
             placeholder="例如：青山"
@@ -130,7 +130,7 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
           <div>
             <label class="text-sm font-bold text-m-gray mb-1 block">評分</label>
             <div class="flex gap-1">
-              <button 
+              <button
                 v-for="i in 5" :key="i"
                 @click="form.rating = i"
                 class="w-10 h-10 transition-all active:scale-90"
@@ -141,13 +141,13 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
             </div>
           </div>
 
-          <CommonInputField 
+          <CommonInputField
             v-model="form.sugar_ice"
             label="推薦組合 (糖冰)"
             placeholder="例如：微糖微冰"
           />
 
-          <CommonInputField 
+          <CommonInputField
             v-model="form.comment"
             label="短評"
             placeholder="喝起來如何？"
@@ -155,13 +155,15 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
           />
         </div>
 
-        <CommonButton 
-          variant="pink" 
-          @click="handleSubmit" 
-          :disabled="isSubmitting"
-        >
-          {{ isSubmitting ? '提交中...' : '發佈評價' }}
-        </CommonButton>
+        <div class="px-8 pt-4 pb-8 shrink-0 flex justify-center">
+          <CommonButton
+            variant="pink"
+            @click="handleSubmit"
+            :disabled="isSubmitting"
+          >
+            {{ isSubmitting ? '提交中...' : '發佈評價' }}
+          </CommonButton>
+        </div>
       </div>
     </div>
   </Teleport>

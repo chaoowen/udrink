@@ -30,12 +30,13 @@ const handleCategoryClick = (category: string) => {
       @enter="handleSearch"
     />
 
-    <div class="flex gap-3 overflow-x-auto no-scrollbar max-w-full px-4">
-      <CommonButton 
-        v-for="category in DRINK_CATEGORIES" 
+    <div class="flex gap-2 flex-wrap items-start">
+      <CommonButton
+        v-for="category in DRINK_CATEGORIES"
         :key="category"
         variant="blue"
         @click="handleCategoryClick(category)"
+        class="!mx-0"
       >
         {{ category }}
       </CommonButton>
