@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import starIcon from '~/assets/images/icons/star.png'
 import gsap from 'gsap'
+import { DRINK_CATEGORIES } from '~/constants/drink'
 
 const uiStore = useUIStore()
 
@@ -10,6 +11,7 @@ const overlay = ref(null)
 const form = ref({
   shop_name: '',
   drink_name: '',
+  category: '',
   rating: 4,
   sugar_ice: '',
   comment: ''
@@ -33,6 +35,7 @@ const resetForm = () => {
   form.value = {
     shop_name: '',
     drink_name: '',
+    category: '',
     rating: 4,
     sugar_ice: '',
     comment: ''
@@ -47,6 +50,7 @@ const handleSubmit = async () => {
       body: {
         shop_name: form.value.shop_name,
         drink_name: form.value.drink_name,
+        category: form.value.category || null,
         rating: form.value.rating,
         sugar_ice: form.value.sugar_ice,
         comment: form.value.comment
@@ -99,11 +103,29 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
             placeholder="例如：青山"
           />
 
-          <CommonInputField 
+          <CommonInputField
             v-model="form.drink_name"
             label="飲品名稱"
             placeholder="例如：波霸奶茶"
           />
+
+          <div>
+            <label class="text-sm font-bold text-m-gray mb-1 block">飲品分類</label>
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="cat in DRINK_CATEGORIES"
+                :key="cat"
+                type="button"
+                @click="form.category = form.category === cat ? '' : cat"
+                class="px-3 py-1 rounded-full text-sm border transition-all"
+                :class="form.category === cat
+                  ? 'bg-m-pink border-m-pink text-white'
+                  : 'border-m-gray/30 text-m-gray hover:border-m-pink'"
+              >
+                {{ cat }}
+              </button>
+            </div>
+          </div>
 
           <div>
             <label class="text-sm font-bold text-m-gray mb-1 block">評分</label>

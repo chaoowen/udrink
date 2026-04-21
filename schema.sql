@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     shop_id TEXT,                   -- nullable，未來可與 shops 表關聯做歸類
     shop_name TEXT NOT NULL,
     drink_name TEXT NOT NULL,
+    category TEXT CHECK(category IN ('純茶', '奶茶', '鮮奶茶', '果茶', '奶蓋', '其他', '無咖啡因')),
     rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
     sugar_ice TEXT,
     comment TEXT,
