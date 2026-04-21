@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import Icon1 from '~/assets/images/icons/cloude-5.png'
+import Icon2 from '~/assets/images/icons/cloude-2.png'
+import Icon3 from '~/assets/images/icons/cloude-3.png'
+import IconFace from '~/assets/images/icons/face.png'
+
 definePageMeta({
   middleware: 'auth'
 })
@@ -7,41 +12,31 @@ const userStore = useUserStore()
 const router = useRouter()
 
 const activeTab = ref('reviews')
+const icons = [Icon1, Icon2, Icon3]
+const randomIcon = computed(() => icons[Math.floor(Math.random() * icons.length)])
 
 // Fetch user data
-const { data: myReviews } = await useFetch('/api/reviews/latest') // Replace with a filtered API if needed
-const { data: myFavorites } = await useFetch('/api/reviews/latest') // Placeholder
-
-const logout = () => {
-  if (confirm('確定要登出嗎？')) {
-    userStore.logout()
-    router.push('/login')
-  }
-}
+const { data: myReviews } = await useFetch('/api/reviews/mine')
+const { data: myFavorites } = await useFetch('/api/reviews/mine') // Placeholder
 </script>
 
 <template>
-  <div class="py-8 flex flex-col gap-10">
+  <div class="py-8 flex flex-col items-center gap-10">
     <!-- Profile Header -->
     <div class="flex flex-col items-center gap-4 text-center">
-      <div class="w-24 h-24 bg-m-blue rounded-full flex items-center justify-center text-4xl shadow-inner">
-        🥤
+      <div class="relative w-24">
+        <img :src="randomIcon" alt="" class="w-24">
+        <img :src="IconFace" alt="" class="w-16 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       </div>
       <div>
-        <h1 class="text-3xl font-black text-m-gray tracking-tight">{{ userStore.username }}</h1>
+        <p class="text-3xl font-black text-m-gray tracking-tight">{{ userStore.username }}</p>
         <p class="text-xs text-m-gray opacity-40 font-mono">ID: {{ userStore.userId }}</p>
       </div>
-      <button 
-        @click="logout" 
-        class="text-xs font-bold text-m-pink border border-m-pink/30 px-4 py-1.5 rounded-full hover:bg-m-pink/10 transition-colors"
-      >
-        登出帳號
-      </button>
     </div>
 
     <!-- Tabs -->
-    <div class="flex flex-col gap-6">
-      <div class="flex bg-white p-1.5 rounded-full shadow-sm border border-[#eee]">
+    <div class="w-full flex flex-col gap-6 max-w-[1200px]">
+      <div class="w-full flex bg-white p-1.5 rounded-full shadow-sm border border-[#eee]">
         <button 
           @click="activeTab = 'reviews'"
           class="flex-1 py-3 rounded-full text-sm font-bold transition-all"
@@ -59,7 +54,7 @@ const logout = () => {
       </div>
 
       <!-- Content -->
-      <div class="flex flex-col gap-6">
+      <div class="w-full flex flex-col gap-6">
         <template v-if="activeTab === 'reviews'">
           <div v-if="myReviews && myReviews.length > 0" class="flex flex-col gap-6">
             <!-- Filtered in real world, but using the same list for demo -->

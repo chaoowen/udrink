@@ -8,8 +8,10 @@ export const useUserStore = defineStore('user', () => {
   // Initialize from cookie on client side
   const initUser = () => {
     const cookieId = useCookie('udrink_user_id')
+    const cookieUsername = useCookie('udrink_username')
     if (cookieId.value) {
       userId.value = cookieId.value
+      username.value = cookieUsername.value ?? null
     }
     isLoaded.value = true
   }
@@ -26,7 +28,14 @@ export const useUserStore = defineStore('user', () => {
       const result = data.value as any
       userId.value = result.user.id
       username.value = result.user.username
-      
+
+      const cookieUsername = useCookie('udrink_username', {
+        maxAge: 60 * 60 * 24 * 30,
+        path: '/',
+        sameSite: 'lax',
+      })
+      cookieUsername.value = result.user.username
+
       return { success: true }
     } catch (err) {
       console.error('Login failed:', err)
@@ -38,7 +47,9 @@ export const useUserStore = defineStore('user', () => {
     userId.value = null
     username.value = null
     const cookieId = useCookie('udrink_user_id')
+    const cookieUsername = useCookie('udrink_username')
     cookieId.value = null
+    cookieUsername.value = null
   }
 
   const isAuthenticated = computed(() => !!userId.value)
