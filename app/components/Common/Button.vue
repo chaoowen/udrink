@@ -59,25 +59,14 @@ const playTransition = () => {
     const tl = gsap.timeline({
       onComplete: () => {
         resolve()
-        // Graceful fade out after some time if the page hasn't changed
-        setTimeout(() => {
-          if (overlayRef.value) {
-            gsap.to(overlayRef.value, {
-              opacity: 0,
-              duration: 0.5,
-              onComplete: () => {
-                isExpanding.value = false
-                gsap.set(overlayRef.value, { display: 'none' })
-              }
-            })
-          }
-        }, 2000)
+        isExpanding.value = false
+        gsap.set(overlayRef.value, { display: 'none' })
       }
     })
 
     // 1. Tactile shrink
-    tl.to(buttonRef.value, { scale: 0.85, duration: 0.15, ease: "power2.out" })
-    tl.to(buttonRef.value, { scale: 0.9, duration: 0.1, ease: "power2.in" })
+    tl.to(buttonRef.value, { scale: 0.85, duration: 0.06, ease: "power2.out" })
+    tl.to(buttonRef.value, { scale: 1, duration: 0.06, ease: "power2.in" })
 
     // 2. Prep and play expansion from current button location
     tl.set(overlayRef.value, {
@@ -90,13 +79,10 @@ const playTransition = () => {
     })
 
     tl.to(overlayRef.value, {
-      scale: 60, 
+      scale: 60,
       duration: 0.7,
       ease: "power3.inOut"
     })
-
-    // 3. Hold for remaining time to fulfill the "1.5s" feel
-    tl.to({}, { duration: 0.6 })
   })
 }
 
