@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@nuxt/icon": "^2.2.1",
+    "nitro-cloudflare-dev": "^0.2.2",
     "wrangler": "^4.81.0"
   }
 }

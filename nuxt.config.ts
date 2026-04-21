@@ -6,7 +6,11 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
+    'nitro-cloudflare-dev',
   ],
+  nitro: {
+    preset: 'cloudflare-pages',
+  },
   css: ['~/assets/css/main.css'],
   build: {
     transpile: ['gsap'],
