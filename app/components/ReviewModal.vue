@@ -56,6 +56,7 @@ const handleSubmit = async () => {
         comment: form.value.comment
       }
     })
+    await refreshNuxtData()
     resetForm()
     handleClose()
   } catch (err) {
