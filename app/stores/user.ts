@@ -18,14 +18,11 @@ export const useUserStore = defineStore('user', () => {
 
   const login = async (name: string) => {
     try {
-      const { data, error } = await useFetch('/api/auth', {
+      const result = await $fetch<{ user: { id: string; username: string } }>('/api/auth', {
         method: 'POST',
         body: { username: name }
       })
 
-      if (error.value) throw error.value
-
-      const result = data.value as any
       userId.value = result.user.id
       username.value = result.user.username
 
