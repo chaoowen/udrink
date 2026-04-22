@@ -13,7 +13,7 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <header class="fixed top-0 w-full p-3 z-50 bg-m-cream">
+  <header class="fixed top-0 w-full p-3 z-40 bg-m-cream">
     <div
       class="max-w-[1200px] mx-auto flex justify-between items-center"
       :class="{ 'sm:flex-row flex-col gap-2': userStore.isAuthenticated }"
