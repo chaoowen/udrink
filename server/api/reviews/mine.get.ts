@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
       r.id,
       r.shop_name,
       r.drink_name,
+      r.category,
       r.rating,
       r.sugar_ice,
       r.comment,

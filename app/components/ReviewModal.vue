@@ -18,6 +18,13 @@ const form = ref({
 })
 
 const isSubmitting = ref(false)
+const isEditMode = computed(() => !!uiStore.editingReview)
+
+watch(() => uiStore.editingReview, (review) => {
+  if (review) {
+    form.value = { ...review }
+  }
+}, { immediate: true })
 
 const handleClose = () => {
   gsap.to(modalContent.value, {
@@ -45,17 +52,27 @@ const resetForm = () => {
 const handleSubmit = async () => {
   isSubmitting.value = true
   try {
-    await $fetch('/api/reviews', {
-      method: 'POST',
-      body: {
-        shop_name: form.value.shop_name,
-        drink_name: form.value.drink_name,
-        category: form.value.category || null,
-        rating: form.value.rating,
-        sugar_ice: form.value.sugar_ice,
-        comment: form.value.comment
-      }
-    })
+    const body = {
+      shop_name: form.value.shop_name,
+      drink_name: form.value.drink_name,
+      category: form.value.category || null,
+      rating: form.value.rating,
+      sugar_ice: form.value.sugar_ice,
+      comment: form.value.comment
+    }
+
+    if (isEditMode.value) {
+      await $fetch(`/api/reviews/${uiStore.editingReview!.id}`, {
+        method: 'PUT',
+        body
+      })
+    } else {
+      await $fetch('/api/reviews', {
+        method: 'POST',
+        body
+      })
+    }
+
     await refreshNuxtData()
     resetForm()
     handleClose()
@@ -92,7 +109,7 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
         class="bg-white w-full max-w-2xl rounded-bubble shadow-xl flex flex-col max-h-[calc(100dvh-12rem)]"
       >
         <div class="flex justify-between items-center px-8 pt-8 pb-4 shrink-0">
-          <h2 class="text-lg md:text-2xl font-medium">新增喝貨點評</h2>
+          <h2 class="text-lg md:text-2xl font-medium">{{ isEditMode ? '編輯點評' : '新增喝貨點評' }}</h2>
           <button @click="handleClose" class="opacity-80 hover:opacity-100">✕</button>
         </div>
 
@@ -162,7 +179,7 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
             @click="handleSubmit"
             :disabled="isSubmitting"
           >
-            {{ isSubmitting ? '提交中...' : '發佈評價' }}
+            {{ isSubmitting ? '提交中...' : isEditMode ? '儲存變更' : '發佈評價' }}
           </CommonButton>
         </div>
       </div>

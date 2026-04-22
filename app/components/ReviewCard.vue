@@ -1,17 +1,34 @@
 <script setup lang="ts">
 import starIcon from '~/assets/images/icons/star.png'
 
+const uiStore = useUIStore()
+
 const props = defineProps<{
   review: {
+    id?: string
     username: string
     drink_name: string
     shop_name: string
+    category?: string
     rating: number
     sugar_ice?: string
     comment?: string
     created_at: string
   }
+  editable?: boolean
 }>()
+
+const handleEdit = () => {
+  uiStore.openEditModal({
+    id: props.review.id!,
+    shop_name: props.review.shop_name,
+    drink_name: props.review.drink_name,
+    category: props.review.category ?? '',
+    rating: props.review.rating,
+    sugar_ice: props.review.sugar_ice ?? '',
+    comment: props.review.comment ?? '',
+  })
+}
 
 </script>
 
@@ -29,9 +46,19 @@ const props = defineProps<{
         />
       </div>
 
-      <span class="text-sm text-m-gray opacity-60">
-        {{ new Date(review.created_at).toLocaleDateString() }}
-      </span>
+      <div class="flex items-center gap-2">
+        <button
+          v-if="editable"
+          @click="handleEdit"
+          class="text-sm text-m-cream-dark hover:text-m-purple-dark transition-colors"
+        >
+          編輯
+        </button>
+        <span class="opacity-60"> | </span>
+        <span class="text-sm text-m-gray opacity-60">
+          {{ new Date(review.created_at).toLocaleDateString() }}
+        </span>
+      </div>
     </div>
 
     <div class="flex gap-2 items-center">

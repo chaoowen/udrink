@@ -58,10 +58,11 @@ const { data: myFavorites } = await useFetch('/api/reviews/mine') // Placeholder
         <template v-if="activeTab === 'reviews'">
           <div v-if="myReviews && myReviews.length > 0" class="flex flex-col gap-6">
             <!-- Filtered in real world, but using the same list for demo -->
-            <ReviewCard 
-              v-for="review in myReviews" 
-              :key="review.id" 
-              :review="review" 
+            <ReviewCard
+              v-for="review in myReviews"
+              :key="review.id"
+              :review="review"
+              :editable="true"
             />
           </div>
           <div v-else class="py-12 text-center opacity-40 text-sm italic font-medium">
