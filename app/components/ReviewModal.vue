@@ -88,7 +88,7 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
     >
       <div 
         ref="modalContent"
-        class="bg-white w-full max-w-2xl rounded-bubble shadow-xl flex flex-col max-h-[calc(100dvh-10rem)]"
+        class="bg-white w-full max-w-2xl rounded-bubble shadow-xl flex flex-col max-h-[calc(100dvh-12rem)]"
       >
         <div class="flex justify-between items-center px-8 pt-8 pb-4 shrink-0">
           <h2 class="text-lg md:text-2xl font-medium">新增喝貨點評</h2>
