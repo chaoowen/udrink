@@ -5,6 +5,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'DB not found' })
   }
 
+  const { category } = getQuery(event)
+
+  if (!category) {
+    throw createError({ statusCode: 400, statusMessage: 'category is required' })
+  }
+
   const results = await DB.prepare(`
     SELECT
       r.id,
@@ -18,9 +24,11 @@ export default defineEventHandler(async (event) => {
       u.username
     FROM reviews r
     LEFT JOIN users u ON r.user_id = u.id
+    WHERE r.category = ?
     ORDER BY r.created_at DESC
-    LIMIT 20
+    LIMIT 50
   `)
+  .bind(category)
   .all()
 
   return results.results

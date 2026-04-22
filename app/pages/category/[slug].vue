@@ -8,13 +8,12 @@ const router = useRouter()
 const slug = computed(() => route.params.slug as string)
 
 // Fetching results based on category
-const { data: reviews, pending } = await useAsyncData(`category-${slug.value}`, async () => {
-  const { data } = await useFetch('/api/reviews/latest')
-  // In a real app, this would be a filtered API call
-  // We're filtering client-side for now since the mock DB might be global
-  return (data.value as any[])?.filter(r => r.category === slug.value) || []
+const { data: reviews, pending } = await useAsyncData(`category-${slug.value}`, () => {
+  return $fetch<any[]>('/api/reviews/by-category', {
+    query: { category: slug.value },
+  })
 }, {
-  watch: [slug]
+  watch: [slug],
 })
 
 const handleCategoryClick = (category: string) => {
