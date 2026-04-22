@@ -22,15 +22,16 @@ const handleCategoryClick = (category: string) => {
 </script>
 
 <template>
-  <div class="max-w-[1200px] mx-auto py-12 space-y-10">
+  <div class="max-w-[1200px] mx-auto py-12 space-y-10 px-4">
     <h1 class="text-2xl font-bold">探索所有關於 {{ slug }} 的點評與飲品推薦</h1>
     
-    <div class="flex gap-3 overflow-x-auto no-scrollbar w-fit">
+    <div class="flex gap-3 flex-wrap">
       <CommonButton 
         v-for="category in DRINK_CATEGORIES" 
         :key="category"
         :variant="category === slug ? 'pink' : 'blue'"
         @click="handleCategoryClick(category)"
+        class="!mx-0"
       >
         {{ category }}
       </CommonButton>

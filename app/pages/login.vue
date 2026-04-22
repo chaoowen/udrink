@@ -40,7 +40,7 @@ const loginIcons = [
 </script>
 
 <template>
-  <div class="h-full min-h-[calc(100vh-80px)] flex items-center justify-center relative overflow-hidden">
+  <div class="h-full min-h-[calc(100vh-80px)] flex items-center justify-center px-4 relative overflow-hidden">
     <!-- Background Floating Icons 🎉 -->
     <FloatingIcons :icons="loginIcons" />
 
