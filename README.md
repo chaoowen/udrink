@@ -34,22 +34,20 @@ cd udrink
 npm install
 ```
 
-### 2. 初始化資料庫 (本地模擬)
-本專案已附帶 `schema.sql` 與 `seed.sql`。執行以下指令初始化本地 SQLite 資料庫：
+### 2. 初始化資料庫 (僅第一次 / 新環境)
+本專案已附帶 `schema.sql` 與 `seed.sql`。**首次開發**或在新環境 clone 後，執行以下指令一鍵初始化本地 D1 資料庫：
 ```bash
-# 初始化結構
-npx wrangler d1 execute udrink-db --file=./schema.sql --local
-
-# 填入測試資料
-npx wrangler d1 execute udrink-db --file=./seed.sql --local
+npm run db:init
 ```
+
+> 資料會持久化於 `.wrangler/state/v3/d1/`，重啟 dev server 不需重新執行。
+> 僅在刪除 `.wrangler/state/` 或修改 `schema.sql` 後才需再次執行。
 
 ### 3. 啟動開發伺服器
-建議使用 `wrangler` 以獲取完整的 Cloudflare 環境模擬：
 ```bash
-npx wrangler pages dev --compatibility-date=2024-04-03 --d1 DB=udrink-db
+npm run dev
 ```
-訪問開發聯結：`http://localhost:8788`
+訪問開發連結：`http://localhost:3000`
 
 ## 📂 專案結構 (Nuxt 4 Directory Structure)
 ```
