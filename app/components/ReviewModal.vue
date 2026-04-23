@@ -87,7 +87,7 @@ const handleSubmit = async (): Promise<boolean | void> => {
       })
     }
 
-    await refreshNuxtData()
+    uiStore.bumpReviewsVersion()
     resetForm()
     handleClose()
   } catch (err) {
@@ -155,10 +155,8 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
                 :key="cat"
                 type="button"
                 @click="form.category = form.category === cat ? '' : cat; errors.category = ''"
-                class="px-3 py-1 rounded-full text-sm border transition-all"
-                :class="form.category === cat
-                  ? 'bg-m-pink border-m-pink text-white'
-                  : 'border-m-gray/30 text-m-gray hover:border-m-pink'"
+                class="px-3 py-1 rounded-full text-sm border border-m-blue transition-all"
+                :class="{ 'bg-m-blue': form.category === cat }"
               >
                 {{ cat }}
               </button>

@@ -8,13 +8,15 @@ const router = useRouter()
 const slug = computed(() => route.params.slug as string)
 
 // Fetching results based on category
-const { data: reviews, pending } = await useAsyncData(`category-${slug.value}`, () => {
+const { data: reviews, pending, refresh } = await useAsyncData(`category-${slug.value}`, () => {
   return $fetch<any[]>('/api/reviews/by-category', {
     query: { category: slug.value },
   })
 }, {
   watch: [slug],
 })
+
+watch(() => uiStore.reviewsVersion, () => refresh())
 
 const handleCategoryClick = (category: string) => {
   router.push(`/category/${category}`)

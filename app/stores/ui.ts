@@ -16,6 +16,9 @@ export const useUIStore = defineStore('ui', () => {
   const searchQuery = ref('')
   const searchResults = ref([])
   const isLoading = ref(false)
+  const reviewsVersion = ref(0)
+
+  const bumpReviewsVersion = () => { reviewsVersion.value++ }
 
   const openReviewModal = () => {
     editingReview.value = null
@@ -42,9 +45,11 @@ export const useUIStore = defineStore('ui', () => {
     searchQuery,
     searchResults,
     isLoading,
+    reviewsVersion,
     openReviewModal,
     openEditModal,
     closeReviewModal,
-    toggleReviewModal
+    toggleReviewModal,
+    bumpReviewsVersion
   }
 })

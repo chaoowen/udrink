@@ -23,6 +23,11 @@ await fetchReviews(0)
 async function loadMore() {
   await fetchReviews(reviews.value.length)
 }
+
+watch(() => uiStore.reviewsVersion, async () => {
+  reviews.value = []
+  await fetchReviews(0)
+})
 </script>
 
 <template>
