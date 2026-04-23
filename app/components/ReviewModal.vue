@@ -61,8 +61,8 @@ const validateForm = (): boolean => {
   return Object.values(errors.value).every(e => !e)
 }
 
-const handleSubmit = async () => {
-  if (!validateForm()) return
+const handleSubmit = async (): Promise<boolean | void> => {
+  if (!validateForm()) return false
 
   isSubmitting.value = true
   try {
@@ -93,6 +93,7 @@ const handleSubmit = async () => {
   } catch (err) {
     console.error(err)
     alert('提交失敗，請稍後再試')
+    return false
   } finally {
     isSubmitting.value = false
   }
@@ -194,7 +195,7 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
         <div class="px-8 pt-4 pb-8 shrink-0 flex justify-center">
           <CommonButton
             variant="pink"
-            @click="handleSubmit"
+            :async-handler="handleSubmit"
             :disabled="isSubmitting"
           >
             {{ isSubmitting ? '提交中...' : isEditMode ? '儲存變更' : '發佈評價' }}

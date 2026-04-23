@@ -5,7 +5,8 @@ const props = defineProps<{
   variant?: 'blue' | 'pink' | 'green' | 'gray' | 'cream' | 'purple'
   size?: 'sm' | 'md' | 'lg'
   isBubble?: boolean
-  manual?: boolean // NEW: Manual mode to control the expansion
+  manual?: boolean
+  asyncHandler?: () => Promise<boolean | void>
 }>()
 
 const emit = defineEmits(['click'])
@@ -33,8 +34,8 @@ const hexColors = {
 }
 
 const sizes = {
-  sm: 'px-4 py-2 text-sm',
-  md: 'px-6 py-3',
+  sm: 'px-3 md:px-4 py-1 md:py-2 text-sm',
+  md: 'px-4 md:px-6 py-2 md:py-3',
   lg: 'px-8 py-4 text-xl'
 }
 
@@ -91,14 +92,20 @@ defineExpose({ playTransition })
 
 const handleClick = async (e: MouseEvent) => {
   if (isExpanding.value) return
-  
+
   if (props.manual) {
-    // In manual mode, we just emit. The parent must call playTransition()
     emit('click', e)
     return
   }
 
-  // In auto mode, we animate first, then emit
+  if (props.asyncHandler) {
+    const result = await props.asyncHandler()
+    if (result === false) return
+    await playTransition()
+    return
+  }
+
+  // Default: animate then emit
   await playTransition()
   emit('click', e)
 }
