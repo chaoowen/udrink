@@ -12,7 +12,7 @@ const form = ref({
   shop_name: '',
   drink_name: '',
   category: '',
-  rating: 4,
+  rating: 0,
   sugar_ice: '',
   comment: ''
 })
@@ -43,13 +43,27 @@ const resetForm = () => {
     shop_name: '',
     drink_name: '',
     category: '',
-    rating: 4,
+    rating: 0,
     sugar_ice: '',
     comment: ''
   }
+  errors.value = { shop_name: '', drink_name: '', category: '', rating: '' }
+}
+
+const errors = ref({ shop_name: '', drink_name: '', category: '', rating: '' })
+
+const validateForm = (): boolean => {
+  errors.value = { shop_name: '', drink_name: '', category: '', rating: '' }
+  if (!form.value.shop_name.trim()) errors.value.shop_name = '請填寫店家名稱'
+  if (!form.value.drink_name.trim()) errors.value.drink_name = '請填寫飲品名稱'
+  if (!form.value.category) errors.value.category = '請選擇飲品分類'
+  if (!form.value.rating) errors.value.rating = '請選擇評分'
+  return Object.values(errors.value).every(e => !e)
 }
 
 const handleSubmit = async () => {
+  if (!validateForm()) return
+
   isSubmitting.value = true
   try {
     const body = {
@@ -119,22 +133,27 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
             v-model="form.shop_name"
             label="店家名稱"
             placeholder="例如：青山"
+            required
+            :error="errors.shop_name"
+            @update:model-value="errors.shop_name = ''"
           />
 
           <CommonInputField
             v-model="form.drink_name"
             label="飲品名稱"
             placeholder="例如：波霸奶茶"
+            required
+            :error="errors.drink_name"
+            @update:model-value="errors.drink_name = ''"
           />
 
-          <div>
-            <label class="text-sm font-bold text-m-gray mb-1 block">飲品分類</label>
+          <CommonInputField label="飲品分類" required :error="errors.category">
             <div class="flex flex-wrap gap-2">
               <button
                 v-for="cat in DRINK_CATEGORIES"
                 :key="cat"
                 type="button"
-                @click="form.category = form.category === cat ? '' : cat"
+                @click="form.category = form.category === cat ? '' : cat; errors.category = ''"
                 class="px-3 py-1 rounded-full text-sm border transition-all"
                 :class="form.category === cat
                   ? 'bg-m-pink border-m-pink text-white'
@@ -143,21 +162,20 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
                 {{ cat }}
               </button>
             </div>
-          </div>
+          </CommonInputField>
 
-          <div>
-            <label class="text-sm font-bold text-m-gray mb-1 block">評分</label>
+          <CommonInputField label="評分" required :error="errors.rating">
             <div class="flex gap-1">
               <button
                 v-for="i in 5" :key="i"
-                @click="form.rating = i"
+                @click="form.rating = i; errors.rating = ''"
                 class="w-10 h-10 transition-all active:scale-90"
                 :class="i <= form.rating ? 'opacity-100' : 'opacity-20 grayscale'"
               >
                 <img :src="starIcon" alt="" class="w-full h-full object-contain" />
               </button>
             </div>
-          </div>
+          </CommonInputField>
 
           <CommonInputField
             v-model="form.sugar_ice"
