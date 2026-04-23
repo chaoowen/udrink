@@ -5,6 +5,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'DB not found' })
   }
 
+  const query = getQuery(event)
+  const limit = 10
+  const offset = Number(query.offset ?? 0)
+
   const results = await DB.prepare(`
     SELECT
       r.id,
@@ -19,9 +23,15 @@ export default defineEventHandler(async (event) => {
     FROM reviews r
     LEFT JOIN users u ON r.user_id = u.id
     ORDER BY r.created_at DESC
-    LIMIT 20
+    LIMIT ? OFFSET ?
   `)
+  .bind(limit, offset)
   .all()
 
-  return results.results
+  const total = await DB.prepare('SELECT COUNT(*) as count FROM reviews').first<{ count: number }>()
+
+  return {
+    reviews: results.results,
+    hasMore: offset + limit < (total?.count ?? 0),
+  }
 })

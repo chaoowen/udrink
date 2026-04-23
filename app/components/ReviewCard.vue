@@ -54,7 +54,7 @@ const handleEdit = () => {
         >
           編輯
         </button>
-        <span class="opacity-60"> | </span>
+        <span v-if="editable" class="opacity-60"> | </span>
         <span class="text-sm text-m-gray opacity-60">
           {{ new Date(review.created_at).toLocaleDateString() }}
         </span>
