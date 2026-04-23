@@ -10,7 +10,3 @@
     font-family: 'Zen Maru Gothic', sans-serif;
   }
 }
-
-.bubble-btn {
-  @apply rounded-bubble px-6 py-3 transition-all duration-300 active:scale-95;
-}

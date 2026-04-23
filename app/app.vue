@@ -7,7 +7,7 @@
     
     <LayoutHeader />
 
-    <main class="pt-16">
+    <main class="pt-16 pb-8">
       <NuxtPage />
     </main>
 

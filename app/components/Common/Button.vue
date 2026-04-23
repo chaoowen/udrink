@@ -115,11 +115,11 @@ const handleClick = async (e: MouseEvent) => {
   <div class="inline-block mx-auto">
     <button
       ref="buttonRef"
-      class="bubble-btn font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:scale-90 active:scale-90"
+      class="font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:scale-90 active:scale-90 origin-center"
       :class="[
         colors[variant || 'blue'],
         sizes[size || 'md'],
-        isBubble ? 'rounded-bubble' : 'rounded-2xl',
+        isBubble ? 'rounded-2xl' : 'rounded-bubble',
         isExpanding ? 'pointer-events-none' : ''
       ]"
       @click="handleClick"
@@ -135,10 +135,3 @@ const handleClick = async (e: MouseEvent) => {
     </Teleport>
   </div>
 </template>
-
-<style scoped>
-.bubble-btn {
-  /* Ensure the hover scale doesn't conflict with parent layout */
-  transform-origin: center;
-}
-</style>

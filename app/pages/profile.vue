@@ -21,7 +21,7 @@ const { data: myFavorites } = await useFetch('/api/reviews/mine') // Placeholder
 </script>
 
 <template>
-  <div class="py-8 flex flex-col items-center gap-10 px-4">
+  <div class="py-12 flex flex-col items-center gap-10 px-4">
     <!-- Profile Header -->
     <div class="flex flex-col items-center gap-4 text-center">
       <div class="relative w-24">
