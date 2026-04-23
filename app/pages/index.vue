@@ -24,7 +24,7 @@ onMounted(() => {
 
 <template>
   <ViewsHomeHero />
-  <div class="max-w-[1200px] mx-auto flex flex-col gap-32 py-20 px-4">
+  <div class="max-w-[1200px] mx-auto flex flex-col gap-20 md:gap-40 py-20 px-4">
     <ViewsHomeStep />
     <ViewsHomeSearch />
     <ViewsHomeFeedBack />

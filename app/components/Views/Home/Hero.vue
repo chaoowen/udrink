@@ -28,8 +28,8 @@ const icons = [
       <p class="text-m-purple-dark">飲料總是喝過就忘？</p>
       <div class="flex items-center justify-center gap-2">
         <span class="text-m-purple-dark">讓</span>
-        <img src="~/assets/images/icons/text-1.png" alt="" class="h-10" />
-        <img src="~/assets/images/icons/text-4.png" alt="" class="h-10" />
+        <img src="~/assets/images/icons/text-1.png" alt="" class="h-10 md:h-16" />
+        <img src="~/assets/images/icons/text-4.png" alt="" class="h-10 md:h-16" />
         <span class="text-m-purple-dark">來記得</span>
       </div>
     </div>
