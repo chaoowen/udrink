@@ -97,6 +97,12 @@ npx wrangler pages deploy dist --project-name=udrink --commit-dirty=true
 npx wrangler pages deploy dist --project-name=udrink --commit-dirty=true
 ```
 
+> 若部署後 API 回傳 `500 DB not found`，代表 D1 binding 未生效。確認 Dashboard 已設定後，重新觸發一次 deploy：
+> ```bash
+> npx wrangler pages deploy dist --project-name=udrink --commit-dirty=true
+> ```
+> 或直接 push 任意 commit 讓 GitHub Actions 重跑。
+
 ---
 
 ## GitHub CI 自動部署
@@ -150,6 +156,22 @@ npm run dev
 ---
 
 ## 資料庫操作
+
+### 何時需要執行遠端 schema
+
+| 情況 | 需要執行 |
+|------|----------|
+| 第一次部署，遠端 DB 尚無資料表 | `schema.sql` + `seed.sql` |
+| 修改了 `schema.sql`（新增欄位、資料表等） | `schema.sql` |
+| 遠端 DB 被刪除重建 | `schema.sql` + `seed.sql` |
+
+> `seed.sql` 只在首次或重建時執行，正式環境的資料應透過 API 操作，不重複執行 seed。
+
+```bash
+# 需要時在本地執行（wrangler 會連線到遠端 Cloudflare D1）
+npx wrangler d1 execute udrink-db --remote --file=schema.sql
+npx wrangler d1 execute udrink-db --remote --file=seed.sql
+```
 
 ### 查詢本機 DB
 ```bash
