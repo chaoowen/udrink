@@ -10,6 +10,7 @@ definePageMeta({
 })
 
 const userStore = useUserStore()
+const uiStore = useUIStore()
 
 const activeTab = ref('reviews')
 const icons = [Icon1, Icon2, Icon3]
@@ -48,7 +49,8 @@ const handleClearSearch = () => {
 const { data: myReviews, pending: isSearching } = await useAsyncData(
   'my-reviews',
   () => reviewService.fetchMine(keyword.value),
-  { watch: [keyword] },
+  // 新增／編輯評價後 reviewsVersion 會遞增，一併重新載入
+  { watch: [keyword, () => uiStore.reviewsVersion] },
 )
 </script>
 
