@@ -23,9 +23,15 @@ export const reviewService = {
     })
   },
 
-  /** 取得我的評價列表 */
-  async fetchMine() {
-    return $fetch<Review[]>('/api/reviews/mine')
+  /**
+   * 取得我的評價列表，可帶關鍵字搜尋店名／飲品／評論
+   * 需在 Nuxt context 內呼叫（如 useAsyncData），SSR 時才會轉送登入 cookie
+   */
+  async fetchMine(q = '') {
+    const requestFetch = useRequestFetch()
+    return requestFetch<Review[]>('/api/reviews/mine', {
+      params: q ? { q } : undefined,
+    })
   },
 
   /** 新增評價 */
