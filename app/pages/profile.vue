@@ -4,6 +4,7 @@ import Icon2 from '~/assets/images/icons/cloude-2.png'
 import Icon3 from '~/assets/images/icons/cloude-3.png'
 import IconFace from '~/assets/images/icons/face.png'
 import { reviewService } from '~/services/reviewService'
+import { favoriteService } from '~/services/favoriteService'
 
 definePageMeta({
   middleware: 'auth',
@@ -11,6 +12,7 @@ definePageMeta({
 
 const userStore = useUserStore()
 const uiStore = useUIStore()
+const favoriteStore = useFavoriteStore()
 
 const activeTab = ref('reviews')
 const icons = [Icon1, Icon2, Icon3]
@@ -44,6 +46,28 @@ const { data: myReviews, pending: isSearching } = await useAsyncData(
 )
 
 const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(myReviews, fetchMyReviewsPage)
+
+// 收藏清單：第一次切換到收藏分頁才載入
+const {
+  data: myFavorites,
+  status: favoritesStatus,
+  execute: loadFavorites,
+  refresh: refreshFavorites,
+} = useAsyncData('my-favorites', () => favoriteService.fetchList(), { immediate: false })
+
+const {
+  isLoadingMore: isLoadingMoreFavorites,
+  loadMore: handleLoadMoreFavorites,
+} = useLoadMore(myFavorites, favoriteService.fetchList)
+
+watch(activeTab, (tab) => {
+  if (tab === 'favorites' && favoritesStatus.value === 'idle') loadFavorites()
+})
+
+// 收藏／取消收藏後同步清單（尚未載入過則略過）
+watch(() => favoriteStore.favoritesVersion, () => {
+  if (favoritesStatus.value !== 'idle') refreshFavorites()
+})
 </script>
 
 <template>
@@ -165,13 +189,49 @@ const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(myReviews, fetch
         </template>
 
         <template v-else>
-          <div class="py-12 text-center flex flex-col items-center gap-4">
-            <p class="opacity-40">
-              收藏功能即將上線！
-            </p>
-            <p class="opacity-40">
-              敬請期待！
-            </p>
+          <div
+            v-if="favoritesStatus === 'idle' || favoritesStatus === 'pending'"
+            class="py-12 flex justify-center"
+          >
+            <Icon
+              name="ph:spinner-gap-bold"
+              class="text-4xl animate-spin text-m-gray opacity-20"
+            />
+          </div>
+          <div
+            v-else-if="favoritesStatus === 'error'"
+            class="py-12 text-center opacity-40 text-sm italic font-medium"
+          >
+            收藏清單載入失敗，請稍後再試
+          </div>
+          <div
+            v-else-if="myFavorites && myFavorites.reviews.length > 0"
+            class="flex flex-col gap-6"
+          >
+            <ReviewCard
+              v-for="review in myFavorites.reviews"
+              :key="review.id"
+              :review="review"
+            />
+            <CommonButton
+              v-if="myFavorites.hasMore"
+              variant="pink"
+              class="self-center"
+              :disabled="isLoadingMoreFavorites"
+              @click="handleLoadMoreFavorites"
+            >
+              {{ isLoadingMoreFavorites ? '載入中...' : '載入更多' }}
+            </CommonButton>
+          </div>
+          <div
+            v-else
+            class="py-12 text-center flex flex-col items-center gap-2 opacity-40 text-sm font-medium"
+          >
+            <Icon
+              name="ph:heart-bold"
+              class="text-4xl"
+            />
+            <p>還沒有收藏任何評價，看到喜歡的點評就按下愛心吧！</p>
           </div>
         </template>
       </div>

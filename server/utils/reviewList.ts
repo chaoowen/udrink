@@ -1,10 +1,14 @@
 import type { H3Event } from 'h3'
 
 interface ReviewListFilter {
-  /** 額外的 WHERE 條件（不含 WHERE 關鍵字），需為常數 SQL，值一律走 params */
+  /** WHERE 條件（不含 WHERE 關鍵字），需為常數 SQL，值一律走 params */
   whereSql: string
   params: unknown[]
   offset: number
+  /** 額外 JOIN（常數 SQL），例如收藏清單 JOIN review_favorites */
+  joinSql?: string
+  /** 排序（常數 SQL），預設依評價建立時間新到舊 */
+  orderSql?: string
 }
 
 /**
@@ -13,15 +17,20 @@ interface ReviewListFilter {
  */
 export const queryReviewPage = async (
   event: H3Event,
-  { whereSql, params, offset }: ReviewListFilter,
+  { whereSql, params, offset, joinSql = '', orderSql = 'r.created_at DESC' }: ReviewListFilter,
 ) => {
   const DB = useDB(event)
 
   const [results, total] = await Promise.all([
-    DB.prepare(`${REVIEW_SELECT_SQL} WHERE ${whereSql} ORDER BY r.created_at DESC LIMIT ? OFFSET ?`)
+    DB.prepare(`
+      ${REVIEW_SELECT_SQL} ${joinSql}
+      WHERE ${whereSql}
+      ORDER BY ${orderSql}
+      LIMIT ? OFFSET ?
+    `)
       .bind(...params, REVIEW_PAGE_SIZE, offset)
       .all(),
-    DB.prepare(`SELECT COUNT(*) as count FROM reviews r WHERE ${whereSql}`)
+    DB.prepare(`SELECT COUNT(*) as count FROM reviews r ${joinSql} WHERE ${whereSql}`)
       .bind(...params)
       .first<{ count: number }>(),
   ])

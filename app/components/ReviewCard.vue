@@ -3,6 +3,8 @@ import starIcon from '~/assets/images/icons/star.png'
 import type { Review } from '~/types/review'
 
 const uiStore = useUIStore()
+const userStore = useUserStore()
+const favoriteStore = useFavoriteStore()
 
 const props = defineProps<{
   review: Review
@@ -20,6 +22,10 @@ const handleEdit = () => {
     comment: props.review.comment ?? '',
   })
 }
+
+const isFavorited = computed(() => favoriteStore.isFavorited(props.review.id))
+
+const handleToggleFavorite = () => favoriteStore.toggleFavorite(props.review.id)
 </script>
 
 <template>
@@ -37,6 +43,20 @@ const handleEdit = () => {
       </div>
 
       <div class="flex items-center gap-2">
+        <button
+          v-if="userStore.isAuthenticated"
+          type="button"
+          class="flex items-center transition-transform hover:scale-110"
+          :class="isFavorited ? 'text-red-300' : 'text-m-gray/40 hover:text-red-300'"
+          :aria-label="isFavorited ? '取消收藏' : '收藏'"
+          :aria-pressed="isFavorited"
+          @click="handleToggleFavorite"
+        >
+          <Icon
+            :name="isFavorited ? 'ph:heart-fill' : 'ph:heart-bold'"
+            class="text-xl"
+          />
+        </button>
         <button
           v-if="editable"
           class="text-sm text-m-cream-dark hover:text-m-purple-dark transition-colors"

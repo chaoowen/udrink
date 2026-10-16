@@ -46,7 +46,18 @@ CREATE TABLE IF NOT EXISTS favorites (
     FOREIGN KEY (drink_id) REFERENCES drinks(id)
 );
 
--- Indexes（與 migrations/0001_add_review_indexes.sql 一致）
+-- Review Favorites Table（與 migrations/0002_add_review_favorites.sql 一致）
+CREATE TABLE IF NOT EXISTS review_favorites (
+    user_id TEXT NOT NULL,
+    review_id TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, review_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
+);
+
+-- Indexes（與 migrations/0001、0002 一致）
 CREATE INDEX IF NOT EXISTS idx_reviews_user_created ON reviews (user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_reviews_category_created ON reviews (category, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_reviews_created ON reviews (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_review_favorites_user_created ON review_favorites (user_id, created_at DESC);

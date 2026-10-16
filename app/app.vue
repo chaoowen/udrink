@@ -1,4 +1,15 @@
 <script setup lang="ts">
+const userStore = useUserStore()
+const favoriteStore = useFavoriteStore()
+
+// 收藏狀態只影響愛心顯示，於 client 端依登入狀態載入／清空
+onMounted(() => {
+  watch(
+    () => userStore.userId,
+    userId => (userId ? favoriteStore.fetchFavoriteIds() : favoriteStore.reset()),
+    { immediate: true },
+  )
+})
 </script>
 
 <template>
