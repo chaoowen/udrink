@@ -33,41 +33,17 @@ const handleClearSearch = () => {
   handleSearchNow()
 }
 
+const fetchMyReviewsPage = (offset: number) =>
+  reviewService.fetchMine({ q: keyword.value, offset })
+
 const { data: myReviews, pending: isSearching } = await useAsyncData(
   'my-reviews',
-  () => reviewService.fetchMine({ q: keyword.value }),
+  () => fetchMyReviewsPage(0),
   // 新增／編輯評價後 reviewsVersion 會遞增，一併重新載入
   { watch: [keyword, () => uiStore.reviewsVersion] },
 )
 
-const isLoadingMore = ref(false)
-
-/** 載入下一頁並接在現有列表後；期間若關鍵字已變更則丟棄結果 */
-const handleLoadMore = async () => {
-  const current = myReviews.value
-  if (!current || isLoadingMore.value) return
-
-  const requestKeyword = keyword.value
-  isLoadingMore.value = true
-  try {
-    const next = await reviewService.fetchMine({
-      q: requestKeyword,
-      offset: current.reviews.length,
-    })
-    if (requestKeyword !== keyword.value || myReviews.value !== current) return
-
-    myReviews.value = {
-      ...next,
-      reviews: [...current.reviews, ...next.reviews],
-    }
-  }
-  catch (err) {
-    console.error(err)
-  }
-  finally {
-    isLoadingMore.value = false
-  }
-}
+const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(myReviews, fetchMyReviewsPage)
 </script>
 
 <template>

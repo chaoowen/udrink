@@ -24,7 +24,7 @@ const handleCategoryClick = (category: string) => {
 
     <CommonInput
       v-model="uiStore.searchQuery"
-      placeholder="搜尋飲品或店名..."
+      placeholder="搜尋飲品、店名或評論..."
       icon="ph:magnifying-glass-bold"
       class="w-full md:w-[400px]"
       @enter="handleSearch"

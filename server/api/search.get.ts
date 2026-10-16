@@ -1,30 +1,13 @@
-/** GET /api/search — 模糊搜尋飲品與店家 */
+/**
+ * GET /api/search?q=&offset= — 全站評價搜尋（分頁）
+ * 依關鍵字比對店名／飲品／評論；q 為空時回傳全部評價（新到舊）
+ */
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const q = query.q as string
 
-  if (!q) {
-    return []
-  }
-
-  const DB = useDB(event)
-
-  // Fuzzy search on shops and drinks
-  // Using a combined query to return drinks with their shop names
-  const results = await DB.prepare(`
-    SELECT 
-      d.id as drink_id, 
-      d.name as drink_name, 
-      d.category, 
-      s.name as shop_name,
-      s.id as shop_id
-    FROM drinks d
-    JOIN shops s ON d.shop_id = s.id
-    WHERE d.name LIKE ? OR s.name LIKE ?
-    LIMIT 20
-  `)
-    .bind(`%${q}%`, `%${q}%`)
-    .all()
-
-  return results.results
+  return queryReviewPage(event, {
+    whereSql: REVIEW_KEYWORD_SQL,
+    params: getKeywordParams(parseKeyword(query.q)),
+    offset: parseOffset(query.offset),
+  })
 })

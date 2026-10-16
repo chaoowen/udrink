@@ -43,8 +43,8 @@ export interface PaginatedReviewsResponse {
   hasMore: boolean
 }
 
-/** 我的評價查詢條件 */
-export interface MyReviewsQuery {
+/** 評價搜尋／分頁查詢條件 */
+export interface ReviewSearchQuery {
   q?: string
   offset?: number
 }
