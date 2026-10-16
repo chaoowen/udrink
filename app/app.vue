@@ -4,7 +4,7 @@
 <template>
   <div class="relative min-h-screen bg-m-cream">
     <NuxtRouteAnnouncer />
-    
+
     <LayoutHeader />
 
     <main class="pt-16 pb-8">

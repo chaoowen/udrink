@@ -10,7 +10,9 @@ export const useUIStore = defineStore('ui', () => {
   const reviewsVersion = ref(0)
 
   /** 遞增版本號，觸發評價列表重新載入 */
-  const bumpReviewsVersion = () => { reviewsVersion.value++ }
+  const bumpReviewsVersion = () => {
+    reviewsVersion.value++
+  }
 
   /** 開啟新增評價 Modal */
   const openReviewModal = () => {
@@ -46,6 +48,6 @@ export const useUIStore = defineStore('ui', () => {
     openEditModal,
     closeReviewModal,
     toggleReviewModal,
-    bumpReviewsVersion
+    bumpReviewsVersion,
   }
 })

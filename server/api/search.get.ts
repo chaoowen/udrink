@@ -23,8 +23,8 @@ export default defineEventHandler(async (event) => {
     WHERE d.name LIKE ? OR s.name LIKE ?
     LIMIT 20
   `)
-  .bind(`%${q}%`, `%${q}%`)
-  .all()
+    .bind(`%${q}%`, `%${q}%`)
+    .all()
 
   return results.results
 })

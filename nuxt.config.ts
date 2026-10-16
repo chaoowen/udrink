@@ -1,21 +1,11 @@
 export default defineNuxtConfig({
-  future: {
-    compatibilityVersion: 4,
-  },
   modules: [
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     'nitro-cloudflare-dev',
+    '@nuxt/eslint',
   ],
-  nitro: {
-    preset: 'cloudflare-pages',
-  },
-  css: ['~/assets/css/main.css'],
-  build: {
-    transpile: ['gsap'],
-  },
-  compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   app: {
     head: {
@@ -24,11 +14,31 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
         { name: 'description', content: '專為手搖飲與超商飲品設計的社群評分與收藏平台。' },
-        { name: 'theme-color', content: '#F7F2E0' }
+        { name: 'theme-color', content: '#F7F2E0' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-      ]
-    }
-  }
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      ],
+    },
+  },
+  css: ['~/assets/css/main.css'],
+  build: {
+    transpile: ['gsap'],
+  },
+  future: {
+    compatibilityVersion: 4,
+  },
+  compatibilityDate: '2025-07-15',
+  nitro: {
+    preset: 'cloudflare-pages',
+  },
+  eslint: {
+    config: {
+      stylistic: {
+        semi: false,
+        quotes: 'single',
+        indent: 2,
+      },
+    },
+  },
 })

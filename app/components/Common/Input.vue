@@ -23,7 +23,7 @@ defineEmits<{
 
 <template>
   <div class="relative w-full">
-    <input 
+    <input
       :value="modelValue"
       :type="type"
       :placeholder="placeholder"
@@ -31,12 +31,15 @@ defineEmits<{
       :class="inputClass"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       @keyup.enter="$emit('enter')"
-    />
-    <div 
+    >
+    <div
       v-if="icon"
       class="absolute right-6 top-1/2 -translate-y-1/2 text-m-gray/50 flex items-center pointer-events-none"
     >
-      <Icon :name="icon" class="text-2xl" />
+      <Icon
+        :name="icon"
+        class="text-2xl"
+      />
     </div>
   </div>
 </template>

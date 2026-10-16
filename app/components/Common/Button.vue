@@ -13,7 +13,8 @@ const props = defineProps<{
   size?: 'sm' | 'md' | 'lg'
   isBubble?: boolean
   manual?: boolean
-  asyncHandler?: () => Promise<boolean | void>
+  /** 回傳 false 代表中止轉場動畫 */
+  asyncHandler?: () => Promise<boolean>
 }>()
 
 const emit = defineEmits(['click'])
@@ -28,7 +29,7 @@ const colors = {
   green: 'bg-m-green text-m-gray',
   gray: 'bg-m-gray text-white',
   cream: 'bg-m-cream text-m-gray',
-  purple: 'bg-m-purple text-m-gray'
+  purple: 'bg-m-purple text-m-gray',
 }
 
 /**
@@ -43,7 +44,7 @@ const getButtonBgColor = (): string => {
 const sizes = {
   sm: 'px-3 md:px-4 py-1 md:py-2 text-sm',
   md: 'px-4 md:px-6 py-2 md:py-3',
-  lg: 'px-8 py-4 text-xl'
+  lg: 'px-8 py-4 text-xl',
 }
 
 /**
@@ -59,22 +60,22 @@ const playTransition = () => {
     }
 
     isExpanding.value = true
-    
+
     // Calculate center of button
     const x = rect.left + rect.width / 2
     const y = rect.top + rect.height / 2
-    
+
     const tl = gsap.timeline({
       onComplete: () => {
         resolve()
         isExpanding.value = false
         gsap.set(overlayRef.value, { display: 'none' })
-      }
+      },
     })
 
     // 1. Tactile shrink
-    tl.to(buttonRef.value, { scale: 0.85, duration: 0.06, ease: "power2.out" })
-    tl.to(buttonRef.value, { scale: 1, duration: 0.06, ease: "power2.in" })
+    tl.to(buttonRef.value, { scale: 0.85, duration: 0.06, ease: 'power2.out' })
+    tl.to(buttonRef.value, { scale: 1, duration: 0.06, ease: 'power2.in' })
 
     // 2. Prep and play expansion from current button location
     tl.set(overlayRef.value, {
@@ -83,13 +84,13 @@ const playTransition = () => {
       y: y - 50,
       scale: 0,
       opacity: 1,
-      backgroundColor: getButtonBgColor()
+      backgroundColor: getButtonBgColor(),
     })
 
     tl.to(overlayRef.value, {
       scale: 60,
       duration: 0.7,
-      ease: "power3.inOut"
+      ease: 'power3.inOut',
     })
   })
 }
@@ -127,7 +128,7 @@ const handleClick = async (e: MouseEvent) => {
         colors[variant || 'blue'],
         sizes[size || 'md'],
         isBubble ? 'rounded-2xl' : 'rounded-bubble',
-        isExpanding ? 'pointer-events-none' : ''
+        isExpanding ? 'pointer-events-none' : '',
       ]"
       @click="handleClick"
     >
@@ -135,10 +136,10 @@ const handleClick = async (e: MouseEvent) => {
     </button>
 
     <Teleport to="body">
-      <div 
+      <div
         ref="overlayRef"
         class="fixed top-0 left-0 w-[100px] h-[100px] rounded-full hidden pointer-events-none z-[9999]"
-      ></div>
+      />
     </Teleport>
   </div>
 </template>

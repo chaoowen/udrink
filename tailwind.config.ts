@@ -25,7 +25,7 @@ export default <Partial<Config>>{
       },
       borderRadius: {
         // 超圓潤棉花糖角
-        'bubble': '40px',
+        bubble: '40px',
       },
       boxShadow: {
         // 像雲朵一樣輕盈的陰影
@@ -35,9 +35,9 @@ export default <Partial<Config>>{
       },
       animation: {
         // 讓雲朵或泡泡輕微漂浮
-        'float': 'float 6s ease-in-out infinite',
+        float: 'float 6s ease-in-out infinite',
         // 讓 Modal 跳出來更有彈性
-        'pop': 'pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        pop: 'pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
       },
       keyframes: {
         float: {
@@ -47,8 +47,8 @@ export default <Partial<Config>>{
         pop: {
           '0%': { transform: 'scale(0.8)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
-        }
+        },
       },
-    }
-  }
+    },
+  },
 }

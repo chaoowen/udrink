@@ -16,7 +16,10 @@ export default defineEventHandler(async (event) => {
     INSERT INTO reviews (id, user_id, shop_id, shop_name, drink_name, category, rating, sugar_ice, comment)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
-    .bind(id, userId, shop_id || null, shop_name, drink_name, category || null, rating, sugar_ice, comment)
+    .bind(
+      id, userId, shop_id || null, shop_name, drink_name,
+      category || null, rating, sugar_ice, comment,
+    )
     .run()
 
   return { success: true, id }

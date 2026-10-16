@@ -15,12 +15,13 @@ export default defineEventHandler(async (event) => {
   // Check if user exists
   const existingUser = await DB.prepare('SELECT id, username FROM users WHERE username = ?')
     .bind(username)
-    .first<{ id: string; username: string }>()
+    .first<{ id: string, username: string }>()
 
-  let user: { id: string; username: string }
+  let user: { id: string, username: string }
   if (existingUser) {
     user = existingUser
-  } else {
+  }
+  else {
     // Register "Get or Create" logic as per instructions
     const id = crypto.randomUUID()
     await DB.prepare('INSERT INTO users (id, username) VALUES (?, ?)')

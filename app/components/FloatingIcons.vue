@@ -1,8 +1,8 @@
 <script setup lang="ts">
 interface IconConfig {
-  name: string      // 檔案名稱，如 'cloude-1.png'
-  class: string     // 定點位置與大小 class，如 'top-0 left-0 w-20'
-  delay?: string    // 動畫延遲
+  name: string // 檔案名稱，如 'cloude-1.png'
+  class: string // 定點位置與大小 class，如 'top-0 left-0 w-20'
+  delay?: string // 動畫延遲
   duration?: string // 動畫時長
 }
 
@@ -22,17 +22,17 @@ const getIconSrc = (name: string): string => {
 <template>
   <!-- 絕對定位容器，預設填滿父層且不阻擋點擊事件 -->
   <div class="absolute inset-0 pointer-events-none overflow-visible z-10">
-    <img 
+    <img
       v-for="(icon, index) in icons"
       :key="index"
       :src="getIconSrc(icon.name)"
       class="absolute animate-float transition-all duration-700 ease-out hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
       :class="icon.class"
-      :style="{ 
-        animationDelay: icon.delay || '0s', 
-        animationDuration: icon.duration || '6s' 
+      :style="{
+        animationDelay: icon.delay || '0s',
+        animationDuration: icon.duration || '6s',
       }"
-    />
+    >
   </div>
 </template>
 

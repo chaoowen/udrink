@@ -4,7 +4,7 @@ const router = useRouter()
 
 const username = ref('')
 const isLoading = ref(false)
-const loginBtn = ref<InstanceType<typeof CommonButton> | null>(null)
+const loginBtn = useTemplateRef('loginBtn')
 
 const handleLogin = async () => {
   if (!username.value || username.value.length < 2) {
@@ -18,11 +18,10 @@ const handleLogin = async () => {
 
   if (result.success) {
     // Only play the celebratory expansion if login was successful!
-    if (loginBtn.value) {
-      await loginBtn.value!.playTransition()
-    }
+    await loginBtn.value?.playTransition()
     router.push('/')
-  } else {
+  }
+  else {
     alert('登入失敗，請稍後再試。')
   }
 }
@@ -45,35 +44,45 @@ const loginIcons = [
     <FloatingIcons :icons="loginIcons" />
 
     <div class="py-10 flex flex-col gap-12 items-center text-center relative z-20">
-    <div class="flex flex-col gap-4">
-      <h1 class="text-3xl font-bold">喝貨的起點就此展開</h1>
-      <p>輸入名字，讓你的紀錄可以被保留，點餐時刻不焦慮</p>
-      <div class="w-full p-6 bg-m-pink/40 rounded-3xl border border-m-pink/30">
-        <h3 class="pb-1 text-sm font-bold">⚠️ 隱私提醒</h3>
-        <p class="text-sm font-medium">本站採用「簡易識別」機制，未設置傳統密碼保護。</p>
-        <p class="text-sm font-medium">建議使用獨特的用戶名以避免意外被他人登入。</p>
-        <p class="text-sm font-medium">本站僅供個人收藏與分享心得使用，請勿存放敏感資料。</p>
+      <div class="flex flex-col gap-4">
+        <h1 class="text-3xl font-bold">
+          喝貨的起點就此展開
+        </h1>
+        <p>輸入名字，讓你的紀錄可以被保留，點餐時刻不焦慮</p>
+        <div class="w-full p-6 bg-m-pink/40 rounded-3xl border border-m-pink/30">
+          <h3 class="pb-1 text-sm font-bold">
+            ⚠️ 隱私提醒
+          </h3>
+          <p class="text-sm font-medium">
+            本站採用「簡易識別」機制，未設置傳統密碼保護。
+          </p>
+          <p class="text-sm font-medium">
+            建議使用獨特的用戶名以避免意外被他人登入。
+          </p>
+          <p class="text-sm font-medium">
+            本站僅供個人收藏與分享心得使用，請勿存放敏感資料。
+          </p>
+        </div>
       </div>
-  </div>
 
-    <div class="w-full max-w-xs flex flex-col gap-4">
-      <CommonInput 
-        v-model="username"
-        placeholder="你的名字 (例如: Kevin)"
-        input-class="text-center focus:ring-m-pink/30"
-        @enter="handleLogin"
-      />
-      
-      <CommonButton 
-        ref="loginBtn"
-        variant="purple" 
-        @click="handleLogin"
-        :disabled="isLoading"
-        manual
-      >
-        {{ isLoading ? '登入中...' : '出發！' }}
-      </CommonButton>
-    </div>
+      <div class="w-full max-w-xs flex flex-col gap-4">
+        <CommonInput
+          v-model="username"
+          placeholder="你的名字 (例如: Kevin)"
+          input-class="text-center focus:ring-m-pink/30"
+          @enter="handleLogin"
+        />
+
+        <CommonButton
+          ref="loginBtn"
+          variant="purple"
+          :disabled="isLoading"
+          manual
+          @click="handleLogin"
+        >
+          {{ isLoading ? '登入中...' : '出發！' }}
+        </CommonButton>
+      </div>
     </div>
   </div>
 </template>

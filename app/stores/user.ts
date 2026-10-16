@@ -33,7 +33,8 @@ export const useUserStore = defineStore('user', () => {
       cookieUsername.value = result.user.username
 
       return { success: true }
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Login failed:', err)
       return { success: false, error: err }
     }
@@ -58,6 +59,6 @@ export const useUserStore = defineStore('user', () => {
     initUser,
     login,
     logout,
-    isAuthenticated
+    isAuthenticated,
   }
 })

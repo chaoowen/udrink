@@ -36,7 +36,7 @@ export const reviewService = {
 
   /** 新增評價 */
   async create(payload: CreateReviewPayload) {
-    return $fetch<{ success: boolean; id: string }>('/api/reviews', {
+    return $fetch<{ success: boolean, id: string }>('/api/reviews', {
       method: 'POST',
       body: payload,
     })

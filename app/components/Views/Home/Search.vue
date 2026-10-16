@@ -22,7 +22,7 @@ const handleCategoryClick = (category: string) => {
       <p>搜搜看就知道！</p>
     </div>
 
-    <CommonInput 
+    <CommonInput
       v-model="uiStore.searchQuery"
       placeholder="搜尋飲品或店名..."
       icon="ph:magnifying-glass-bold"
@@ -35,8 +35,8 @@ const handleCategoryClick = (category: string) => {
         v-for="category in DRINK_CATEGORIES"
         :key="category"
         variant="blue"
-        @click="handleCategoryClick(category)"
         class="!mx-0"
+        @click="handleCategoryClick(category)"
       >
         {{ category }}
       </CommonButton>

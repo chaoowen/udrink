@@ -20,7 +20,6 @@ const handleEdit = () => {
     comment: props.review.comment ?? '',
   })
 }
-
 </script>
 
 <template>
@@ -34,18 +33,21 @@ const handleEdit = () => {
           alt=""
           class="w-5 h-5 object-contain transition-all"
           :class="i <= review.rating ? 'opacity-100' : 'opacity-20 grayscale'"
-        />
+        >
       </div>
 
       <div class="flex items-center gap-2">
         <button
           v-if="editable"
-          @click="handleEdit"
           class="text-sm text-m-cream-dark hover:text-m-purple-dark transition-colors"
+          @click="handleEdit"
         >
           編輯
         </button>
-        <span v-if="editable" class="opacity-60"> | </span>
+        <span
+          v-if="editable"
+          class="opacity-60"
+        > | </span>
         <span class="text-sm text-m-gray opacity-60">
           {{ review.created_at.slice(0, 10) }}
         </span>
@@ -57,11 +59,17 @@ const handleEdit = () => {
       <span class="py-0.5 px-1 bg-m-pink/60 rounded text-sm">{{ review.shop_name }}</span>
     </div>
 
-    <div v-if="review.sugar_ice" class="text-xs py-1 px-3 bg-m-blue/60 rounded-full w-fit">
+    <div
+      v-if="review.sugar_ice"
+      class="text-xs py-1 px-3 bg-m-blue/60 rounded-full w-fit"
+    >
       ✨ {{ review.sugar_ice }}
     </div>
 
-    <p v-if="review.comment" class="text-sm italic">
+    <p
+      v-if="review.comment"
+      class="text-sm italic"
+    >
       "{{ review.comment }}" — {{ review.username ?? '匿名使用者' }}
     </p>
   </div>

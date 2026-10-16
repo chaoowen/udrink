@@ -17,12 +17,27 @@ const handleLogout = () => {
       class="max-w-[1200px] mx-auto flex justify-between items-center"
       :class="{ 'sm:flex-row flex-col gap-2': userStore.isAuthenticated }"
     >
-      <NuxtLink to="/" class="flex items-center gap-2" :class="{ 'self-start': userStore.isAuthenticated }">
-        <img src="~/assets/images/icons/text-1.png" alt="udrink-logo" class="h-10">
-        <img src="~/assets/images/icons/text-2.png" alt="udrink-logo" class="h-10">
+      <NuxtLink
+        to="/"
+        class="flex items-center gap-2"
+        :class="{ 'self-start': userStore.isAuthenticated }"
+      >
+        <img
+          src="~/assets/images/icons/text-1.png"
+          alt="udrink-logo"
+          class="h-10"
+        >
+        <img
+          src="~/assets/images/icons/text-2.png"
+          alt="udrink-logo"
+          class="h-10"
+        >
       </NuxtLink>
 
-      <div v-if="userStore.isAuthenticated" class="flex items-center gap-3 self-end sm:self-auto">
+      <div
+        v-if="userStore.isAuthenticated"
+        class="flex items-center gap-3 self-end sm:self-auto"
+      >
         <span class="text-sm font-bold">
           嗨，{{ userStore.username || '飲友' }}
         </span>
@@ -33,14 +48,21 @@ const handleLogout = () => {
           <span>個人紀錄</span>
         </NuxtLink>
         <button
-          @click="handleLogout"
           class="text-sm text-m-blue-dark border border-m-blue-dark px-3 py-1 rounded-full hover:bg-m-blue/60 transition-colors"
+          @click="handleLogout"
         >
           登出
         </button>
       </div>
-      <NuxtLink v-else to="/login">
-        <img src="~/assets/images/icons/text-login.png" alt="" class="h-10">
+      <NuxtLink
+        v-else
+        to="/login"
+      >
+        <img
+          src="~/assets/images/icons/text-login.png"
+          alt=""
+          class="h-10"
+        >
       </NuxtLink>
     </div>
   </header>

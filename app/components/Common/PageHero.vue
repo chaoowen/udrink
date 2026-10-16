@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   title: string
   subtitle?: string
   variant?: 'purple' | 'blue' | 'pink' | 'green' | 'cream'
@@ -16,7 +16,7 @@ const bgClasses = {
   blue: 'bg-m-blue',
   pink: 'bg-m-pink',
   green: 'bg-m-green',
-  cream: 'bg-m-cream'
+  cream: 'bg-m-cream',
 }
 
 const titleColors = {
@@ -24,24 +24,40 @@ const titleColors = {
   blue: 'text-m-blue-dark',
   pink: 'text-m-pink', // Fallback as pink doesn't have dark in config yet
   green: 'text-m-green',
-  cream: 'text-m-cream-dark'
+  cream: 'text-m-cream-dark',
 }
 </script>
 
 <template>
-  <div class="w-full pt-16 pb-8 md:pt-24 md:pb-12 px-6 relative overflow-visible" :class="bgClasses[variant || 'purple']">
+  <div
+    class="w-full pt-16 pb-8 md:pt-24 md:pb-12 px-6 relative overflow-visible"
+    :class="bgClasses[variant || 'purple']"
+  >
     <FloatingIcons :icons="icons" />
-    
+
     <div class="max-w-[1200px] mx-auto relative z-20 flex flex-col gap-2">
-      <button 
-        @click="$router.back()" 
+      <button
         class="group flex items-center gap-1 text-sm font-bold text-m-gray/60 hover:text-m-gray transition-colors mb-2 w-fit"
+        @click="$router.back()"
       >
-        <Icon name="ph:arrow-left-bold" class="transition-transform group-hover:-translate-x-1" />
+        <Icon
+          name="ph:arrow-left-bold"
+          class="transition-transform group-hover:-translate-x-1"
+        />
         返回
       </button>
-      <h1 class="text-3xl md:text-5xl font-bold" :class="titleColors[variant || 'purple']">{{ title }}</h1>
-      <p v-if="subtitle" class="text-m-gray font-medium opacity-80 max-w-lg">{{ subtitle }}</p>
+      <h1
+        class="text-3xl md:text-5xl font-bold"
+        :class="titleColors[variant || 'purple']"
+      >
+        {{ title }}
+      </h1>
+      <p
+        v-if="subtitle"
+        class="text-m-gray font-medium opacity-80 max-w-lg"
+      >
+        {{ subtitle }}
+      </p>
     </div>
   </div>
 </template>
