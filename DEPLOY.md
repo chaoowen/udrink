@@ -173,6 +173,21 @@ npx wrangler d1 execute udrink-db --remote --file=schema.sql
 npx wrangler d1 execute udrink-db --remote --file=seed.sql
 ```
 
+### Schema 異動（migrations）
+
+既有資料庫的 schema 異動一律寫成 `migrations/NNNN_描述.sql`，只做新增（`CREATE ... IF NOT EXISTS`、`ALTER TABLE ADD COLUMN`），**不重建資料表、不刪資料**。同一份變更也要同步到 `schema.sql`，給全新環境使用。
+
+```bash
+# 本機：套用尚未執行的 migration（wrangler 以 d1_migrations 表記錄已執行項目）
+npm run db:migrate
+
+# 遠端：部署前手動執行一次
+npx wrangler d1 migrations list udrink-db --remote
+npx wrangler d1 migrations apply udrink-db --remote
+```
+
+> ⚠️ `npm run db:init` 會重跑 `seed.sql`，只適用於全新的本機環境；已有資料時請改用 `db:migrate`。
+
 ### 查詢本機 DB
 ```bash
 npx wrangler d1 execute udrink-db --local --command="SELECT * FROM reviews"

@@ -45,3 +45,8 @@ CREATE TABLE IF NOT EXISTS favorites (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (drink_id) REFERENCES drinks(id)
 );
+
+-- Indexes（與 migrations/0001_add_review_indexes.sql 一致）
+CREATE INDEX IF NOT EXISTS idx_reviews_user_created ON reviews (user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_reviews_category_created ON reviews (category, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_reviews_created ON reviews (created_at DESC);
