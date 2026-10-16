@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUIStore } from '~/stores/ui'
-import { DRINK_CATEGORIES } from '~/constants/drink'
+import { DRINK_CATEGORIES } from '#shared/constants/drink'
 import type { Review } from '~/types/review'
 import { reviewService } from '~/services/reviewService'
 

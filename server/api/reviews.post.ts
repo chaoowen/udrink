@@ -1,24 +1,18 @@
 /** POST /api/reviews — 新增飲品評價 */
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
   const userId = getUserId(event)
-
-  const { shop_name, drink_name, category, rating, sugar_ice, comment, shop_id } = body
-
-  if (!shop_name || !drink_name || !rating) {
-    throw createError({ statusCode: 400, statusMessage: 'shop_name, drink_name and rating are required' })
-  }
-
+  const body = await readValidatedBody(event, createReviewSchema.parse)
   const DB = useDB(event)
 
   const id = crypto.randomUUID()
   await DB.prepare(`
-    INSERT INTO reviews (id, user_id, shop_id, shop_name, drink_name, category, rating, sugar_ice, comment)
+    INSERT INTO reviews
+      (id, user_id, shop_id, shop_name, drink_name, category, rating, sugar_ice, comment)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
     .bind(
-      id, userId, shop_id || null, shop_name, drink_name,
-      category || null, rating, sugar_ice, comment,
+      id, userId, body.shop_id, body.shop_name, body.drink_name,
+      body.category, body.rating, body.sugar_ice, body.comment,
     )
     .run()
 

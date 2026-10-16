@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const DB = useDB(event)
 
   const id = getRouterParam(event, 'id')
-  const body = await readBody(event)
+  const body = await readValidatedBody(event, updateReviewSchema.parse)
 
   const existing = await DB.prepare('SELECT user_id FROM reviews WHERE id = ?')
     .bind(id)
@@ -26,10 +26,10 @@ export default defineEventHandler(async (event) => {
     .bind(
       body.shop_name,
       body.drink_name,
-      body.category ?? null,
+      body.category,
       body.rating,
-      body.sugar_ice ?? null,
-      body.comment ?? null,
+      body.sugar_ice,
+      body.comment,
       id,
     )
     .run()

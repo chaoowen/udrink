@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DRINK_CATEGORIES } from '~/constants/drink'
+import { DRINK_CATEGORIES } from '#shared/constants/drink'
 
 const uiStore = useUIStore()
 const router = useRouter()

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import starIcon from '~/assets/images/icons/star.png'
 import gsap from 'gsap'
-import { DRINK_CATEGORIES } from '~/constants/drink'
+import { DRINK_CATEGORIES } from '#shared/constants/drink'
 import { reviewService } from '~/services/reviewService'
 
 const uiStore = useUIStore()
