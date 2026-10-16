@@ -36,8 +36,15 @@ export interface EditingReview {
   comment: string
 }
 
-/** GET /api/reviews/latest 回應 */
-export interface LatestReviewsResponse {
+/** 分頁評價列表回應（/api/reviews/latest、/api/reviews/mine） */
+export interface PaginatedReviewsResponse {
   reviews: Review[]
+  total: number
   hasMore: boolean
+}
+
+/** 我的評價查詢條件 */
+export interface MyReviewsQuery {
+  q?: string
+  offset?: number
 }

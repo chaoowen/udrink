@@ -23,23 +23,10 @@ const userIcon = computed(() => {
 const SEARCH_DEBOUNCE_MS = 300
 
 const searchInput = ref('')
-const keyword = ref('')
-let searchTimer: ReturnType<typeof setTimeout> | undefined
-
-// 輸入停頓後才查詢，避免每個字元都打一次 API
-watch(searchInput, (value) => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    keyword.value = value.trim()
-  }, SEARCH_DEBOUNCE_MS)
-})
-
-onBeforeUnmount(() => clearTimeout(searchTimer))
-
-const handleSearchNow = () => {
-  clearTimeout(searchTimer)
-  keyword.value = searchInput.value.trim()
-}
+const { debounced: keyword, flush: handleSearchNow } = useDebouncedValue(
+  searchInput,
+  SEARCH_DEBOUNCE_MS,
+)
 
 const handleClearSearch = () => {
   searchInput.value = ''
@@ -48,10 +35,39 @@ const handleClearSearch = () => {
 
 const { data: myReviews, pending: isSearching } = await useAsyncData(
   'my-reviews',
-  () => reviewService.fetchMine(keyword.value),
+  () => reviewService.fetchMine({ q: keyword.value }),
   // 新增／編輯評價後 reviewsVersion 會遞增，一併重新載入
   { watch: [keyword, () => uiStore.reviewsVersion] },
 )
+
+const isLoadingMore = ref(false)
+
+/** 載入下一頁並接在現有列表後；期間若關鍵字已變更則丟棄結果 */
+const handleLoadMore = async () => {
+  const current = myReviews.value
+  if (!current || isLoadingMore.value) return
+
+  const requestKeyword = keyword.value
+  isLoadingMore.value = true
+  try {
+    const next = await reviewService.fetchMine({
+      q: requestKeyword,
+      offset: current.reviews.length,
+    })
+    if (requestKeyword !== keyword.value || myReviews.value !== current) return
+
+    myReviews.value = {
+      ...next,
+      reviews: [...current.reviews, ...next.reviews],
+    }
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    isLoadingMore.value = false
+  }
+}
 </script>
 
 <template>
@@ -133,21 +149,30 @@ const { data: myReviews, pending: isSearching } = await useAsyncData(
             />
           </div>
           <div
-            v-else-if="myReviews && myReviews.length > 0"
+            v-else-if="myReviews && myReviews.reviews.length > 0"
             class="flex flex-col gap-6"
           >
             <p
               v-if="keyword"
               class="text-sm font-bold text-m-gray/40"
             >
-              共找到 {{ myReviews.length }} 筆符合「{{ keyword }}」的紀錄
+              共找到 {{ myReviews.total }} 筆符合「{{ keyword }}」的紀錄
             </p>
             <ReviewCard
-              v-for="review in myReviews"
+              v-for="review in myReviews.reviews"
               :key="review.id"
               :review="review"
               :editable="true"
             />
+            <CommonButton
+              v-if="myReviews.hasMore"
+              variant="blue"
+              class="self-center"
+              :disabled="isLoadingMore"
+              @click="handleLoadMore"
+            >
+              {{ isLoadingMore ? '載入中...' : '載入更多' }}
+            </CommonButton>
           </div>
           <div
             v-else-if="keyword"

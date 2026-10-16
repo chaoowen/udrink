@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   const DB = useDB(event)
   const query = getQuery(event)
   const limit = 10
-  const offset = Number(query.offset ?? 0)
+  const offset = parseOffset(query.offset)
 
   const results = await DB.prepare(`
     ${REVIEW_SELECT_SQL}
@@ -15,8 +15,11 @@ export default defineEventHandler(async (event) => {
 
   const total = await DB.prepare('SELECT COUNT(*) as count FROM reviews').first<{ count: number }>()
 
+  const totalCount = total?.count ?? 0
+
   return {
     reviews: results.results,
-    hasMore: offset + limit < (total?.count ?? 0),
+    total: totalCount,
+    hasMore: offset + limit < totalCount,
   }
 })

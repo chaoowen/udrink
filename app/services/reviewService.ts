@@ -2,7 +2,8 @@ import type {
   Review,
   CreateReviewPayload,
   UpdateReviewPayload,
-  LatestReviewsResponse,
+  PaginatedReviewsResponse,
+  MyReviewsQuery,
 } from '~/types/review'
 
 /**
@@ -11,7 +12,7 @@ import type {
 export const reviewService = {
   /** 取得最新評價列表（含分頁） */
   async fetchLatest(offset = 0) {
-    return $fetch<LatestReviewsResponse>('/api/reviews/latest', {
+    return $fetch<PaginatedReviewsResponse>('/api/reviews/latest', {
       params: { offset },
     })
   },
@@ -24,13 +25,13 @@ export const reviewService = {
   },
 
   /**
-   * 取得我的評價列表，可帶關鍵字搜尋店名／飲品／評論
+   * 取得我的評價列表（分頁），可帶關鍵字搜尋店名／飲品／評論
    * 需在 Nuxt context 內呼叫（如 useAsyncData），SSR 時才會轉送登入 cookie
    */
-  async fetchMine(q = '') {
+  async fetchMine({ q = '', offset = 0 }: MyReviewsQuery = {}) {
     const requestFetch = useRequestFetch()
-    return requestFetch<Review[]>('/api/reviews/mine', {
-      params: q ? { q } : undefined,
+    return requestFetch<PaginatedReviewsResponse>('/api/reviews/mine', {
+      params: { q: q || undefined, offset: offset || undefined },
     })
   },
 
