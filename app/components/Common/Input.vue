@@ -1,28 +1,24 @@
 <script setup lang="ts">
-defineProps({
-  modelValue: {
-    type: String,
-    required: true
-  },
-  placeholder: {
-    type: String,
-    default: ''
-  },
-  type: {
-    type: String,
-    default: 'text'
-  },
-  icon: {
-    type: String,
-    default: ''
-  },
-  inputClass: {
-    type: String,
-    default: ''
-  }
+/**
+ * 基礎搜尋輸入欄位元件，支援 icon 與 enter 事件
+ */
+withDefaults(defineProps<{
+  modelValue: string
+  placeholder?: string
+  type?: string
+  icon?: string
+  inputClass?: string
+}>(), {
+  placeholder: '',
+  type: 'text',
+  icon: '',
+  inputClass: '',
 })
 
-defineEmits(['update:modelValue', 'enter'])
+defineEmits<{
+  'update:modelValue': [value: string]
+  'enter': []
+}>()
 </script>
 
 <template>

@@ -1,3 +1,4 @@
+/** GET /api/reviews/mine — 取得目前登入使用者的評價列表 */
 export default defineEventHandler(async (event) => {
   const userId = getCookie(event, 'udrink_user_id')
 

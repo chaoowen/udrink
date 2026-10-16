@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { Review } from '~/types/review'
+import { reviewService } from '~/services/reviewService'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -6,11 +9,11 @@ const searchQuery = ref(route.query.q as string || '')
 
 // Fetching results based on search query
 const { data: reviews, pending, refresh } = await useAsyncData('search-results', async () => {
-  const { data } = await useFetch('/api/reviews/latest')
-  if (!searchQuery.value) return data.value
+  const result = await reviewService.fetchLatest()
+  if (!searchQuery.value) return result.reviews
 
   const q = searchQuery.value.toLowerCase()
-  return (data.value as any[] | null)?.filter((r: any) =>
+  return result.reviews.filter((r: Review) =>
     r.drink_name.toLowerCase().includes(q) ||
     r.shop_name.toLowerCase().includes(q) ||
     r.comment?.toLowerCase().includes(q)

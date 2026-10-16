@@ -2,10 +2,11 @@
 import gsap from 'gsap'
 
 import { DRINK_CATEGORIES } from '~/constants/drink'
+import type { LatestReviewsResponse } from '~/types/review'
 
 const uiStore = useUIStore()
 
-const { data: latestReviews, refresh } = await useFetch('/api/reviews/latest')
+const { data: latestReviews, refresh } = await useFetch<LatestReviewsResponse>('/api/reviews/latest')
 
 const categories = DRINK_CATEGORIES
 

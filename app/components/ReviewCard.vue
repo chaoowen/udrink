@@ -1,20 +1,11 @@
 <script setup lang="ts">
 import starIcon from '~/assets/images/icons/star.png'
+import type { Review } from '~/types/review'
 
 const uiStore = useUIStore()
 
 const props = defineProps<{
-  review: {
-    id?: string
-    username: string
-    drink_name: string
-    shop_name: string
-    category?: string
-    rating: number
-    sugar_ice?: string
-    comment?: string
-    created_at: string
-  }
+  review: Review
   editable?: boolean
 }>()
 
@@ -56,7 +47,7 @@ const handleEdit = () => {
         </button>
         <span v-if="editable" class="opacity-60"> | </span>
         <span class="text-sm text-m-gray opacity-60">
-          {{ new Date(review.created_at).toLocaleDateString() }}
+          {{ review.created_at.slice(0, 10) }}
         </span>
       </div>
     </div>

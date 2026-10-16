@@ -1,4 +1,11 @@
 <script setup lang="ts">
+/**
+ * 標籤化輸入欄位元件，支援文字輸入、textarea、自訂 slot 內容與驗證錯誤訊息
+ */
+defineSlots<{
+  default(): unknown
+}>()
+
 withDefaults(defineProps<{
   label: string
   modelValue?: string | number
@@ -13,7 +20,9 @@ withDefaults(defineProps<{
   bgClass: 'bg-m-cream/80'
 })
 
-defineEmits(['update:modelValue'])
+defineEmits<{
+  'update:modelValue': [value: string | number]
+}>()
 
 const slots = useSlots()
 </script>

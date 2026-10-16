@@ -1,3 +1,4 @@
+/** POST /api/reviews — 新增飲品評價 */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const userId = getCookie(event, 'udrink_user_id') || null

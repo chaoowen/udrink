@@ -1,3 +1,4 @@
+/** GET /api/reviews/by-category — 依飲品分類篩選評價 */
 export default defineEventHandler(async (event) => {
   const DB = event.context.cloudflare?.env?.DB
 

@@ -1,5 +1,12 @@
 <script setup lang="ts">
+/**
+ * 多變體按鈕元件，支援莫蘭迪色系樣式與 GSAP 擴展過渡動畫
+ */
 import gsap from 'gsap'
+
+defineSlots<{
+  default(): unknown
+}>()
 
 const props = defineProps<{
   variant?: 'blue' | 'pink' | 'green' | 'gray' | 'cream' | 'purple'
@@ -24,13 +31,13 @@ const colors = {
   purple: 'bg-m-purple text-m-gray'
 }
 
-const hexColors = {
-  blue: '#D6E4F0',
-  pink: '#F9E1E0',
-  green: '#D4E2D4',
-  gray: '#9A9483',
-  cream: '#FDF5E6',
-  purple: '#E6E6FA'
+/**
+ * 從按鈕元素的 computed style 取得實際背景色
+ * 避免重複寫死 HEX 值，顏色統一由 Tailwind config 管理
+ */
+const getButtonBgColor = (): string => {
+  if (!buttonRef.value) return ''
+  return getComputedStyle(buttonRef.value).backgroundColor
 }
 
 const sizes = {
@@ -76,7 +83,7 @@ const playTransition = () => {
       y: y - 50,
       scale: 0,
       opacity: 1,
-      backgroundColor: hexColors[props.variant || 'blue']
+      backgroundColor: getButtonBgColor()
     })
 
     tl.to(overlayRef.value, {

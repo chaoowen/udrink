@@ -1,3 +1,4 @@
+/** PUT /api/reviews/:id — 編輯自己的評價 */
 export default defineEventHandler(async (event) => {
   const userId = getCookie(event, 'udrink_user_id')
 

@@ -1,18 +1,16 @@
 <script setup lang="ts">
+import type { Review } from '~/types/review'
+import { reviewService } from '~/services/reviewService'
+
 const uiStore = useUIStore()
 
-const reviews = ref<any[]>([])
+const reviews = ref<Review[]>([])
 const hasMore = ref(false)
 const isLoading = ref(false)
 
-interface LatestReviewsResponse {
-  reviews: any[]
-  hasMore: boolean
-}
-
 async function fetchReviews(offset: number) {
   isLoading.value = true
-  const data = await $fetch<LatestReviewsResponse>('/api/reviews/latest', { query: { offset } })
+  const data = await reviewService.fetchLatest(offset)
   reviews.value.push(...data.reviews)
   hasMore.value = data.hasMore
   isLoading.value = false

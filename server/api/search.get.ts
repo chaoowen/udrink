@@ -1,15 +1,16 @@
+/** GET /api/search — 模糊搜尋飲品與店家 */
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const q = query.q as string;
+  const query = getQuery(event)
+  const q = query.q as string
 
   if (!q) {
-    return [];
+    return []
   }
 
-  const DB = event.context.cloudflare?.env?.DB;
+  const DB = event.context.cloudflare?.env?.DB
 
   if (!DB) {
-    throw createError({ statusCode: 500, statusMessage: 'DB not found' });
+    throw createError({ statusCode: 500, statusMessage: 'DB not found' })
   }
 
   // Fuzzy search on shops and drinks
@@ -29,5 +30,5 @@ export default defineEventHandler(async (event) => {
   .bind(`%${q}%`, `%${q}%`)
   .all();
 
-  return results.results;
-});
+  return results.results
+})

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useUIStore } from '~/stores/ui'
 import { DRINK_CATEGORIES } from '~/constants/drink'
+import type { Review } from '~/types/review'
+import { reviewService } from '~/services/reviewService'
 
 const uiStore = useUIStore()
 const route = useRoute()
@@ -8,10 +10,8 @@ const router = useRouter()
 const slug = computed(() => route.params.slug as string)
 
 // Fetching results based on category
-const { data: reviews, pending, refresh } = await useAsyncData(`category-${slug.value}`, () => {
-  return $fetch<any[]>('/api/reviews/by-category', {
-    query: { category: slug.value },
-  })
+const { data: reviews, pending, refresh } = await useAsyncData<Review[]>(`category-${slug.value}`, () => {
+  return reviewService.fetchByCategory(slug.value)
 }, {
   watch: [slug],
 })

@@ -1,3 +1,4 @@
+/** GET /api/reviews/latest — 取得最新評價列表（含分頁） */
 export default defineEventHandler(async (event) => {
   const DB = event.context.cloudflare?.env?.DB
 

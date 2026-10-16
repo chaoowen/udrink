@@ -2,6 +2,7 @@
 import starIcon from '~/assets/images/icons/star.png'
 import gsap from 'gsap'
 import { DRINK_CATEGORIES } from '~/constants/drink'
+import { reviewService } from '~/services/reviewService'
 
 const uiStore = useUIStore()
 
@@ -76,15 +77,9 @@ const handleSubmit = async (): Promise<boolean | void> => {
     }
 
     if (isEditMode.value) {
-      await $fetch(`/api/reviews/${uiStore.editingReview!.id}`, {
-        method: 'PUT',
-        body
-      })
+      await reviewService.update(uiStore.editingReview!.id, body)
     } else {
-      await $fetch('/api/reviews', {
-        method: 'POST',
-        body
-      })
+      await reviewService.create(body)
     }
 
     uiStore.bumpReviewsVersion()

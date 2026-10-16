@@ -2,9 +2,8 @@
 const userStore = useUserStore()
 const router = useRouter()
 
-onMounted(() => {
-  userStore.initUser()
-})
+// SSR + Client 都初始化，useCookie 在 SSR 時可從 request headers 讀取
+userStore.initUser()
 
 const handleLogout = () => {
   userStore.logout()

@@ -3,6 +3,7 @@ import Icon1 from '~/assets/images/icons/cloude-5.png'
 import Icon2 from '~/assets/images/icons/cloude-2.png'
 import Icon3 from '~/assets/images/icons/cloude-3.png'
 import IconFace from '~/assets/images/icons/face.png'
+import { reviewService } from '~/services/reviewService'
 
 definePageMeta({
   middleware: 'auth'
@@ -13,11 +14,15 @@ const router = useRouter()
 
 const activeTab = ref('reviews')
 const icons = [Icon1, Icon2, Icon3]
-const randomIcon = computed(() => icons[Math.floor(Math.random() * icons.length)])
+// 基於 username 長度選擇圖標，SSR 和 Client 結果一致
+const userIcon = computed(() => {
+  const index = (userStore.username?.length ?? 0) % icons.length
+  return icons[index]
+})
 
 // Fetch user data
-const { data: myReviews } = await useFetch('/api/reviews/mine')
-const { data: myFavorites } = await useFetch('/api/reviews/mine') // Placeholder
+const { data: myReviews } = await useAsyncData('my-reviews', () => reviewService.fetchMine())
+const { data: myFavorites } = await useAsyncData('my-favorites', () => reviewService.fetchMine()) // Placeholder
 </script>
 
 <template>
@@ -25,7 +30,7 @@ const { data: myFavorites } = await useFetch('/api/reviews/mine') // Placeholder
     <!-- Profile Header -->
     <div class="flex flex-col items-center gap-4 text-center">
       <div class="relative w-24">
-        <img :src="randomIcon" alt="" class="w-24">
+        <img :src="userIcon" alt="" class="w-24">
         <img :src="IconFace" alt="" class="w-16 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       </div>
       <div class="space-y-4">

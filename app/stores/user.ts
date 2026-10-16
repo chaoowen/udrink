@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
+import { authService } from '~/services/authService'
 
 export const useUserStore = defineStore('user', () => {
   const userId = ref<string | null>(null)
   const username = ref<string | null>(null)
   const isLoaded = ref(false)
 
-  // Initialize from cookie on client side
+  /** 從 cookie 初始化使用者狀態 */
   const initUser = () => {
     const cookieId = useCookie('udrink_user_id')
     const cookieUsername = useCookie('udrink_username')
@@ -16,12 +17,10 @@ export const useUserStore = defineStore('user', () => {
     isLoaded.value = true
   }
 
+  /** 登入（Get or Create） */
   const login = async (name: string) => {
     try {
-      const result = await $fetch<{ user: { id: string; username: string } }>('/api/auth', {
-        method: 'POST',
-        body: { username: name }
-      })
+      const result = await authService.login(name)
 
       userId.value = result.user.id
       username.value = result.user.username
@@ -40,6 +39,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  /** 登出並清除 cookie */
   const logout = () => {
     userId.value = null
     username.value = null

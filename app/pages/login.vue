@@ -4,7 +4,7 @@ const router = useRouter()
 
 const username = ref('')
 const isLoading = ref(false)
-const loginBtn = ref(null)
+const loginBtn = ref<InstanceType<typeof CommonButton> | null>(null)
 
 const handleLogin = async () => {
   if (!username.value || username.value.length < 2) {
@@ -19,7 +19,7 @@ const handleLogin = async () => {
   if (result.success) {
     // Only play the celebratory expansion if login was successful!
     if (loginBtn.value) {
-      await (loginBtn.value as any).playTransition()
+      await loginBtn.value!.playTransition()
     }
     router.push('/')
   } else {
