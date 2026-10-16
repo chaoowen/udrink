@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 
-import { DRINK_CATEGORIES } from '~/constants/drink'
-import type { LatestReviewsResponse } from '~/types/review'
-
-const uiStore = useUIStore()
-
-const { data: latestReviews, refresh } = await useFetch<LatestReviewsResponse>('/api/reviews/latest')
-
-const categories = DRINK_CATEGORIES
-
 onMounted(() => {
   // Stagger animation for review cards
   gsap.from('.review-card', {
@@ -18,17 +9,19 @@ onMounted(() => {
     stagger: 0.1,
     duration: 0.8,
     ease: 'power3.out',
-    delay: 0.2
+    delay: 0.2,
   })
 })
 </script>
 
 <template>
-  <ViewsHomeHero />
-  <div class="max-w-[1200px] mx-auto flex flex-col gap-20 md:gap-40 py-20 px-4">
-    <ViewsHomeStep />
-    <ViewsHomeSearch />
-    <ViewsHomeFeedBack />
+  <div>
+    <ViewsHomeHero />
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-20 md:gap-40 py-20 px-4">
+      <ViewsHomeStep />
+      <ViewsHomeSearch />
+      <ViewsHomeFeedBack />
+    </div>
   </div>
 </template>
 
