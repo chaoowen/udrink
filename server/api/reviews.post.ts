@@ -1,7 +1,7 @@
 /** POST /api/reviews — 新增飲品評價 */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const userId = getCookie(event, 'udrink_user_id') || null
+  const userId = getUserId(event)
 
   const { shop_name, drink_name, category, rating, sugar_ice, comment, shop_id } = body
 
@@ -9,16 +9,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'shop_name, drink_name and rating are required' })
   }
 
-  const DB = event.context.cloudflare?.env?.DB
-  if (!DB) throw createError({ statusCode: 500 })
+  const DB = useDB(event)
 
   const id = crypto.randomUUID()
   await DB.prepare(`
     INSERT INTO reviews (id, user_id, shop_id, shop_name, drink_name, category, rating, sugar_ice, comment)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
-  .bind(id, userId, shop_id || null, shop_name, drink_name, category || null, rating, sugar_ice, comment)
-  .run()
+    .bind(id, userId, shop_id || null, shop_name, drink_name, category || null, rating, sugar_ice, comment)
+    .run()
 
   return { success: true, id }
 })

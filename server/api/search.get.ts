@@ -7,11 +7,7 @@ export default defineEventHandler(async (event) => {
     return []
   }
 
-  const DB = event.context.cloudflare?.env?.DB
-
-  if (!DB) {
-    throw createError({ statusCode: 500, statusMessage: 'DB not found' })
-  }
+  const DB = useDB(event)
 
   // Fuzzy search on shops and drinks
   // Using a combined query to return drinks with their shop names
@@ -28,7 +24,7 @@ export default defineEventHandler(async (event) => {
     LIMIT 20
   `)
   .bind(`%${q}%`, `%${q}%`)
-  .all();
+  .all()
 
   return results.results
 })

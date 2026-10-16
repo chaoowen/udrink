@@ -1,11 +1,6 @@
 /** GET /api/reviews/by-category — 依飲品分類篩選評價 */
 export default defineEventHandler(async (event) => {
-  const DB = event.context.cloudflare?.env?.DB
-
-  if (!DB) {
-    throw createError({ statusCode: 500, statusMessage: 'DB not found' })
-  }
-
+  const DB = useDB(event)
   const { category } = getQuery(event)
 
   if (!category) {
@@ -13,24 +8,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const results = await DB.prepare(`
-    SELECT
-      r.id,
-      r.shop_name,
-      r.drink_name,
-      r.category,
-      r.rating,
-      r.sugar_ice,
-      r.comment,
-      r.created_at,
-      u.username
-    FROM reviews r
-    LEFT JOIN users u ON r.user_id = u.id
+    ${REVIEW_SELECT_SQL}
     WHERE r.category = ?
     ORDER BY r.created_at DESC
     LIMIT 50
   `)
-  .bind(category)
-  .all()
+    .bind(category)
+    .all()
 
   return results.results
 })

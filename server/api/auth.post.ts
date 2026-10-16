@@ -10,23 +10,14 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Nuxt/Nitro provides the DB binding in development if wrangler.toml is present
-  // In production (Cloudflare), it's in event.context.cloudflare.env
-  const DB = event.context.cloudflare?.env?.DB || (globalThis as any).__DB__
-
-  if (!DB) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Database binding not found. Make sure wrangler.toml is configured and you are running in a Cloudflare-compatible environment.',
-    })
-  }
+  const DB = useDB(event)
 
   // Check if user exists
-  const existingUser = await DB.prepare('SELECT * FROM users WHERE username = ?')
+  const existingUser = await DB.prepare('SELECT id, username FROM users WHERE username = ?')
     .bind(username)
-    .first()
+    .first<{ id: string; username: string }>()
 
-  let user
+  let user: { id: string; username: string }
   if (existingUser) {
     user = existingUser
   } else {
