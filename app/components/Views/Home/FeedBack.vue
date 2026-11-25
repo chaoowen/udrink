@@ -1,31 +1,17 @@
 <script setup lang="ts">
-import type { Review } from '~/types/review'
 import { reviewService } from '~/services/reviewService'
 
 const uiStore = useUIStore()
 
-const reviews = ref<Review[]>([])
-const hasMore = ref(false)
-const isLoading = ref(false)
+// 用 useAsyncData 讓 SSR 取得的資料直接交給 client，避免 hydration 時重抓一次
+const { data: latest } = await useAsyncData(
+  'latest-reviews',
+  () => reviewService.fetchLatest(0),
+  // 新增／編輯評價後 reviewsVersion 會遞增，一併重新載入
+  { watch: [() => uiStore.reviewsVersion] },
+)
 
-async function fetchReviews(offset: number) {
-  isLoading.value = true
-  const data = await reviewService.fetchLatest(offset)
-  reviews.value.push(...data.reviews)
-  hasMore.value = data.hasMore
-  isLoading.value = false
-}
-
-await fetchReviews(0)
-
-async function loadMore() {
-  await fetchReviews(reviews.value.length)
-}
-
-watch(() => uiStore.reviewsVersion, async () => {
-  reviews.value = []
-  await fetchReviews(0)
-})
+const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(latest, reviewService.fetchLatest)
 </script>
 
 <template>
@@ -35,24 +21,24 @@ watch(() => uiStore.reviewsVersion, async () => {
     </h2>
 
     <div
-      v-if="reviews.length > 0"
+      v-if="latest && latest.reviews.length > 0"
       class="flex flex-col items-center gap-6"
     >
       <div class="grid gap-6 grid-cols-1 md:grid-cols-2 max-w-[1200px] w-full mx-auto">
         <ReviewCard
-          v-for="review in reviews"
+          v-for="review in latest.reviews"
           :key="review.id"
           :review="review"
         />
       </div>
 
       <CommonButton
-        v-if="hasMore"
+        v-if="latest.hasMore"
         variant="pink"
-        :disabled="isLoading"
-        @click="loadMore"
+        :disabled="isLoadingMore"
+        @click="handleLoadMore"
       >
-        {{ isLoading ? '載入中...' : '載入更多' }}
+        {{ isLoadingMore ? '載入中...' : '載入更多' }}
       </CommonButton>
     </div>
 
