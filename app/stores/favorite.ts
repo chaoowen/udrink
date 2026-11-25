@@ -5,6 +5,8 @@ export const useFavoriteStore = defineStore('favorite', () => {
   const favoriteIds = ref<string[]>([])
   /** 收藏異動時遞增，讓收藏清單等列表重新載入 */
   const favoritesVersion = ref(0)
+  /** 正在送出請求的評價 id，避免連點造成狀態錯亂 */
+  const pendingIds = ref<string[]>([])
 
   const isFavorited = (reviewId: string): boolean => favoriteIds.value.includes(reviewId)
 
@@ -21,12 +23,17 @@ export const useFavoriteStore = defineStore('favorite', () => {
 
   /** 切換收藏狀態：先更新畫面，API 失敗再還原 */
   const toggleFavorite = async (reviewId: string) => {
-    const wasFavorited = isFavorited(reviewId)
-    const previousIds = favoriteIds.value
+    if (pendingIds.value.includes(reviewId)) return
 
-    favoriteIds.value = wasFavorited
-      ? previousIds.filter(id => id !== reviewId)
-      : [...previousIds, reviewId]
+    const wasFavorited = isFavorited(reviewId)
+    // 只異動這一筆，同時操作其他評價時不會互相覆蓋
+    const setFavorited = (isOn: boolean) => {
+      const otherIds = favoriteIds.value.filter(id => id !== reviewId)
+      favoriteIds.value = isOn ? [...otherIds, reviewId] : otherIds
+    }
+
+    setFavorited(!wasFavorited)
+    pendingIds.value = [...pendingIds.value, reviewId]
 
     try {
       await (wasFavorited ? favoriteService.remove(reviewId) : favoriteService.add(reviewId))
@@ -34,7 +41,10 @@ export const useFavoriteStore = defineStore('favorite', () => {
     }
     catch (err) {
       console.error('Toggle favorite failed:', err)
-      favoriteIds.value = previousIds
+      setFavorited(wasFavorited)
+    }
+    finally {
+      pendingIds.value = pendingIds.value.filter(id => id !== reviewId)
     }
   }
 
