@@ -48,6 +48,7 @@ const handleLogout = () => {
           <span>個人紀錄</span>
         </NuxtLink>
         <button
+          type="button"
           class="text-sm text-m-blue-dark border border-m-blue-dark px-3 py-1 rounded-full hover:bg-m-blue/60 transition-colors"
           @click="handleLogout"
         >
@@ -57,6 +58,7 @@ const handleLogout = () => {
       <NuxtLink
         v-else
         to="/login"
+        aria-label="登入"
       >
         <img
           src="~/assets/images/icons/text-login.png"

@@ -4,21 +4,27 @@ import { DRINK_CATEGORIES } from '#shared/constants/drink'
 import type { Review } from '~/types/review'
 import { reviewService } from '~/services/reviewService'
 
+definePageMeta({
+  // 不存在的分類直接顯示 404，而不是空白列表
+  validate: route => (DRINK_CATEGORIES as readonly string[]).includes(String(route.params.slug)),
+})
+
 const uiStore = useUIStore()
 const route = useRoute()
 const router = useRouter()
 const slug = computed(() => route.params.slug as string)
 
-// Fetching results based on category
-const { data: reviews, pending, refresh } = await useAsyncData<Review[]>(`category-${slug.value}`, () => {
-  return reviewService.fetchByCategory(slug.value)
-}, {
-  watch: [slug],
-})
+useHead({ title: () => `${slug.value} 點評` })
 
-watch(() => uiStore.reviewsVersion, () => refresh())
+// key 跟著分類變動，切換分類時不會先閃出上一個分類的資料
+const { data: reviews, pending } = await useAsyncData<Review[]>(
+  () => `category-${slug.value}`,
+  () => reviewService.fetchByCategory(slug.value),
+  { watch: [() => uiStore.reviewsVersion] },
+)
 
 const handleCategoryClick = (category: string) => {
+  if (category === slug.value) return
   router.push(`/category/${category}`)
 }
 </script>
@@ -42,7 +48,7 @@ const handleCategoryClick = (category: string) => {
     </div>
 
     <div
-      v-if="pending"
+      v-if="pending && !reviews"
       class="py-32 flex justify-center"
     >
       <Icon
