@@ -3,13 +3,14 @@ import starIcon from '~/assets/images/icons/star.png'
 import gsap from 'gsap'
 import { DRINK_CATEGORIES } from '#shared/constants/drink'
 import { reviewService } from '~/services/reviewService'
+import type { EditingReview } from '~/types/review'
 
 const uiStore = useUIStore()
 
-const modalContent = ref(null)
+const modalContent = ref<HTMLDivElement | null>(null)
 const overlay = ref(null)
 
-const form = ref({
+const createEmptyForm = (): Omit<EditingReview, 'id'> => ({
   shop_name: '',
   drink_name: '',
   category: '',
@@ -18,43 +19,56 @@ const form = ref({
   comment: '',
 })
 
+const createEmptyErrors = () => ({ shop_name: '', drink_name: '', category: '', rating: '' })
+
+const form = ref(createEmptyForm())
+const errors = ref(createEmptyErrors())
+const submitError = ref('')
+
 const isSubmitting = ref(false)
+const isClosing = ref(false)
 const isEditMode = computed(() => !!uiStore.editingReview)
 
-watch(() => uiStore.editingReview, (review) => {
+// 新增模式關閉時保留草稿（誤點遮罩不會遺失輸入）；編輯過的資料則不能殘留到下一次新增
+const isFormFromEdit = ref(false)
+
+const resetForm = () => {
+  form.value = createEmptyForm()
+  errors.value = createEmptyErrors()
+  submitError.value = ''
+  isFormFromEdit.value = false
+}
+
+const prepareForm = () => {
+  const review = uiStore.editingReview
   if (review) {
-    form.value = { ...review }
+    const { id: _id, ...fields } = review
+    form.value = { ...fields }
+    errors.value = createEmptyErrors()
+    submitError.value = ''
+    isFormFromEdit.value = true
+    return
   }
-}, { immediate: true })
+  if (isFormFromEdit.value) resetForm()
+}
 
 const handleClose = () => {
+  if (isClosing.value) return
+  isClosing.value = true
   gsap.to(modalContent.value, {
     scale: 0.8,
     opacity: 0,
     duration: 0.4,
     ease: 'back.in(1.7)',
     onComplete: () => {
+      isClosing.value = false
       uiStore.closeReviewModal()
     },
   })
 }
 
-const resetForm = () => {
-  form.value = {
-    shop_name: '',
-    drink_name: '',
-    category: '',
-    rating: 0,
-    sugar_ice: '',
-    comment: '',
-  }
-  errors.value = { shop_name: '', drink_name: '', category: '', rating: '' }
-}
-
-const errors = ref({ shop_name: '', drink_name: '', category: '', rating: '' })
-
 const validateForm = (): boolean => {
-  errors.value = { shop_name: '', drink_name: '', category: '', rating: '' }
+  errors.value = createEmptyErrors()
   if (!form.value.shop_name.trim()) errors.value.shop_name = '請填寫店家名稱'
   if (!form.value.drink_name.trim()) errors.value.drink_name = '請填寫飲品名稱'
   if (!form.value.category) errors.value.category = '請選擇飲品分類'
@@ -62,18 +76,29 @@ const validateForm = (): boolean => {
   return Object.values(errors.value).every(e => !e)
 }
 
+const handleSelectCategory = (category: string) => {
+  form.value.category = form.value.category === category ? '' : category
+  errors.value.category = ''
+}
+
+const handleSelectRating = (rating: number) => {
+  form.value.rating = rating
+  errors.value.rating = ''
+}
+
 const handleSubmit = async (): Promise<boolean> => {
-  if (!validateForm()) return false
+  if (isSubmitting.value || !validateForm()) return false
 
   isSubmitting.value = true
+  submitError.value = ''
   try {
     const body = {
-      shop_name: form.value.shop_name,
-      drink_name: form.value.drink_name,
+      shop_name: form.value.shop_name.trim(),
+      drink_name: form.value.drink_name.trim(),
       category: form.value.category || null,
       rating: form.value.rating,
-      sugar_ice: form.value.sugar_ice,
-      comment: form.value.comment,
+      sugar_ice: form.value.sugar_ice.trim(),
+      comment: form.value.comment.trim(),
     }
 
     if (isEditMode.value) {
@@ -90,7 +115,7 @@ const handleSubmit = async (): Promise<boolean> => {
   }
   catch (err) {
     console.error(err)
-    alert('提交失敗，請稍後再試')
+    submitError.value = '提交失敗，請稍後再試'
     return false
   }
   finally {
@@ -98,15 +123,35 @@ const handleSubmit = async (): Promise<boolean> => {
   }
 }
 
-watch(() => uiStore.isReviewModalOpen, (newVal) => {
-  if (newVal) {
-    nextTick(() => {
-      gsap.fromTo(modalContent.value,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' },
-      )
-    })
-  }
+// 桌機開啟時自動聚焦第一個欄位；觸控裝置不聚焦，避免鍵盤直接彈出遮住表單
+const focusFirstField = () => {
+  if (!window.matchMedia('(pointer: fine)').matches) return
+  modalContent.value?.querySelector<HTMLInputElement>('input')?.focus()
+}
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && uiStore.isReviewModalOpen) handleClose()
+}
+
+watch(() => uiStore.isReviewModalOpen, (isOpen) => {
+  // Modal 開啟時鎖住背景捲動
+  document.body.style.overflow = isOpen ? 'hidden' : ''
+  if (!isOpen) return
+
+  prepareForm()
+  nextTick(() => {
+    gsap.fromTo(modalContent.value,
+      { scale: 0.8, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' },
+    )
+    focusFirstField()
+  })
+})
+
+onMounted(() => window.addEventListener('keydown', handleKeydown))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
+  document.body.style.overflow = ''
 })
 </script>
 
@@ -120,13 +165,21 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
     >
       <div
         ref="modalContent"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="review-modal-title"
         class="bg-white w-full max-w-2xl rounded-bubble shadow-xl flex flex-col max-h-[calc(100dvh-6rem)]"
       >
         <div class="flex justify-between items-center px-8 pt-8 pb-4 shrink-0">
-          <h2 class="text-lg md:text-2xl font-medium">
+          <h2
+            id="review-modal-title"
+            class="text-lg md:text-2xl font-medium"
+          >
             {{ isEditMode ? '編輯點評' : '新增喝貨點評' }}
           </h2>
           <button
+            type="button"
+            aria-label="關閉"
             class="opacity-80 hover:opacity-100"
             @click="handleClose"
           >
@@ -166,7 +219,8 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
                 type="button"
                 class="px-3 py-1 rounded-full text-sm border border-m-blue transition-all"
                 :class="{ 'bg-m-blue': form.category === cat }"
-                @click="form.category = form.category === cat ? '' : cat; errors.category = ''"
+                :aria-pressed="form.category === cat"
+                @click="handleSelectCategory(cat)"
               >
                 {{ cat }}
               </button>
@@ -182,9 +236,12 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
               <button
                 v-for="i in 5"
                 :key="i"
+                type="button"
+                :aria-label="`${i} 顆星`"
+                :aria-pressed="i === form.rating"
                 class="w-10 h-10 transition-all active:scale-90"
                 :class="i <= form.rating ? 'opacity-100' : 'opacity-20 grayscale'"
-                @click="form.rating = i; errors.rating = ''"
+                @click="handleSelectRating(i)"
               >
                 <img
                   :src="starIcon"
@@ -209,7 +266,14 @@ watch(() => uiStore.isReviewModalOpen, (newVal) => {
           />
         </div>
 
-        <div class="px-8 pt-4 pb-8 shrink-0 flex justify-center">
+        <div class="px-8 pt-4 pb-8 shrink-0 flex flex-col items-center gap-2">
+          <p
+            v-if="submitError"
+            role="alert"
+            class="text-red-300 text-sm"
+          >
+            {{ submitError }}
+          </p>
           <CommonButton
             variant="pink"
             :async-handler="handleSubmit"
