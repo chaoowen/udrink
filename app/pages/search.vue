@@ -37,6 +37,10 @@ const { data: searchResult, pending } = await useAsyncData(
 )
 
 const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(searchResult, fetchSearchPage)
+
+useHead({
+  title: () => (keyword.value ? `「${keyword.value}」的搜尋結果` : '搜尋評價'),
+})
 </script>
 
 <template>
@@ -48,15 +52,18 @@ const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(searchResult, fe
           v-model="searchInput"
           placeholder="搜尋飲品、店名或評論..."
           icon="ph:magnifying-glass-bold"
+          is-clearable
           class="w-full md:w-[400px]"
           @enter="handleSearchNow"
+          @clear="handleSearchNow"
         />
       </div>
 
       <!-- Results -->
       <div class="flex flex-col gap-8">
+        <!-- 只有第一次載入顯示 spinner；之後重新查詢保留舊結果並淡化，避免畫面跳動 -->
         <div
-          v-if="pending"
+          v-if="pending && !searchResult"
           class="py-32 flex justify-center"
         >
           <Icon
@@ -67,7 +74,9 @@ const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(searchResult, fe
 
         <div
           v-else
-          class="min-h-[400px]"
+          class="min-h-[400px] transition-opacity"
+          :class="{ 'opacity-50': pending }"
+          :aria-busy="pending"
         >
           <p
             v-if="searchResult"
