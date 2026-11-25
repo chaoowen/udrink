@@ -1,36 +1,48 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'guest',
+})
+
+useHead({ title: '登入' })
+
+const USERNAME_MIN_LENGTH = 2
+
 const userStore = useUserStore()
+const route = useRoute()
 const router = useRouter()
 
 const username = ref('')
+const errorMessage = ref('')
 const isLoading = ref(false)
 const loginBtn = useTemplateRef('loginBtn')
 
+watch(username, () => {
+  errorMessage.value = ''
+})
+
 const handleLogin = async () => {
-  if (!username.value || username.value.length < 2) {
-    alert('請輸入至少 2 個字的用戶名喔！')
+  if (isLoading.value) return
+
+  const name = username.value.trim()
+  if (name.length < USERNAME_MIN_LENGTH) {
+    errorMessage.value = `請輸入至少 ${USERNAME_MIN_LENGTH} 個字的用戶名喔！`
     return
   }
 
   isLoading.value = true
-  const result = await userStore.login(username.value)
-  isLoading.value = false
+  const result = await userStore.login(name)
 
-  if (result.success) {
-    // Only play the celebratory expansion if login was successful!
-    await loginBtn.value?.playTransition()
-    router.push('/')
+  if (!result.success) {
+    isLoading.value = false
+    errorMessage.value = '登入失敗，請稍後再試。'
+    return
   }
-  else {
-    alert('登入失敗，請稍後再試。')
-  }
+
+  // 登入成功才播放展開轉場，並回到登入前所在的頁面
+  await loginBtn.value?.playTransition()
+  router.push(getSafeRedirect(route.query.redirect))
 }
-// If already logged in, redirect
-onMounted(() => {
-  if (userStore.isAuthenticated) {
-    router.push('/')
-  }
-})
+
 const loginIcons = [
   // { name: 'cloude-1.png', class: 'top-10 left-10 md:left-40 w-32 md:w-56 opacity-50', delay: '0s', duration: '8s' },
   { name: 'circle-1.png', class: 'bottom-0 md:bottom-1/4 left-0 md:left-20 xl:left-60 w-24 md:w-40 opacity-40', delay: '1s', duration: '5s' },
@@ -72,6 +84,13 @@ const loginIcons = [
           input-class="text-center focus:ring-m-pink/30"
           @enter="handleLogin"
         />
+        <p
+          v-if="errorMessage"
+          role="alert"
+          class="text-red-300 text-sm"
+        >
+          {{ errorMessage }}
+        </p>
 
         <CommonButton
           ref="loginBtn"
