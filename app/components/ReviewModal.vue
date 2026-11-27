@@ -39,13 +39,15 @@ const resetForm = () => {
   isFormFromEdit.value = false
 }
 
+// 每次開啟都清掉上一次的錯誤提示；草稿內容保留，但不該一打開就看到舊的錯誤
 const prepareForm = () => {
+  errors.value = createEmptyErrors()
+  submitError.value = ''
+
   const review = uiStore.editingReview
   if (review) {
     const { id: _id, ...fields } = review
     form.value = { ...fields }
-    errors.value = createEmptyErrors()
-    submitError.value = ''
     isFormFromEdit.value = true
     return
   }
