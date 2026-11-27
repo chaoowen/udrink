@@ -10,16 +10,24 @@ import type {
  * 評價相關 API 服務
  */
 export const reviewService = {
-  /** 取得最新評價列表（含分頁） */
+  /**
+   * 取得最新評價列表（含分頁）
+   * 需在 Nuxt context 內呼叫（如 useAsyncData），SSR 時才會轉送 Cloudflare D1 binding
+   */
   async fetchLatest(offset = 0) {
-    return $fetch<PaginatedReviewsResponse>('/api/reviews/latest', {
+    const requestFetch = useRequestFetch()
+    return requestFetch<PaginatedReviewsResponse>('/api/reviews/latest', {
       params: { offset },
     })
   },
 
-  /** 依分類取得評價 */
+  /**
+   * 依分類取得評價
+   * 需在 Nuxt context 內呼叫（如 useAsyncData），SSR 時才會轉送 Cloudflare D1 binding
+   */
   async fetchByCategory(category: string) {
-    return $fetch<Review[]>('/api/reviews/by-category', {
+    const requestFetch = useRequestFetch()
+    return requestFetch<Review[]>('/api/reviews/by-category', {
       params: { category },
     })
   },
@@ -35,9 +43,13 @@ export const reviewService = {
     })
   },
 
-  /** 全站評價搜尋（分頁），比對店名／飲品／評論 */
+  /**
+   * 全站評價搜尋（分頁），比對店名／飲品／評論
+   * 需在 Nuxt context 內呼叫（如 useAsyncData），SSR 時才會轉送 Cloudflare D1 binding
+   */
   async search({ q = '', offset = 0 }: ReviewSearchQuery = {}) {
-    return $fetch<PaginatedReviewsResponse>('/api/search', {
+    const requestFetch = useRequestFetch()
+    return requestFetch<PaginatedReviewsResponse>('/api/search', {
       params: { q: q || undefined, offset: offset || undefined },
     })
   },
