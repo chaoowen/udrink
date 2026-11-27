@@ -10,11 +10,23 @@ definePageMeta({
   middleware: 'auth',
 })
 
+useHead({ title: '個人紀錄' })
+
+type ProfileTab = 'reviews' | 'favorites'
+
 const userStore = useUserStore()
 const uiStore = useUIStore()
 const favoriteStore = useFavoriteStore()
+const route = useRoute()
+const router = useRouter()
 
-const activeTab = ref('reviews')
+// 分頁記在網址 ?tab=，重新整理或從評價返回時仍停留在同一個分頁
+const activeTab = computed<ProfileTab>({
+  get: () => (route.query.tab === 'favorites' ? 'favorites' : 'reviews'),
+  set: (tab) => {
+    router.replace({ query: { ...route.query, tab: tab === 'favorites' ? tab : undefined } })
+  },
+})
 const icons = [Icon1, Icon2, Icon3]
 // 基於 username 長度選擇圖標，SSR 和 Client 結果一致
 const userIcon = computed(() => {
@@ -30,11 +42,6 @@ const { debounced: keyword, flush: handleSearchNow } = useDebouncedValue(
   SEARCH_DEBOUNCE_MS,
 )
 
-const handleClearSearch = () => {
-  searchInput.value = ''
-  handleSearchNow()
-}
-
 const fetchMyReviewsPage = (offset: number) =>
   reviewService.fetchMine({ q: keyword.value, offset })
 
@@ -47,13 +54,15 @@ const { data: myReviews, pending: isSearching } = await useAsyncData(
 
 const { isLoadingMore, loadMore: handleLoadMore } = useLoadMore(myReviews, fetchMyReviewsPage)
 
-// 收藏清單：第一次切換到收藏分頁才載入
+// 收藏清單：直接進入收藏分頁時由 SSR 載入，否則第一次切換過去才載入
 const {
   data: myFavorites,
   status: favoritesStatus,
   execute: loadFavorites,
   refresh: refreshFavorites,
-} = useAsyncData('my-favorites', () => favoriteService.fetchList(), { immediate: false })
+} = await useAsyncData('my-favorites', () => favoriteService.fetchList(), {
+  immediate: activeTab.value === 'favorites',
+})
 
 const {
   isLoadingMore: isLoadingMoreFavorites,
@@ -98,8 +107,14 @@ watch(() => favoriteStore.favoritesVersion, () => {
 
     <!-- Tabs -->
     <div class="w-full flex flex-col gap-6 max-w-[1200px]">
-      <div class="w-full flex bg-white p-1.5 rounded-full border-4 border-m-purple/60">
+      <div
+        role="tablist"
+        class="w-full flex bg-white p-1.5 rounded-full border-4 border-m-purple/60"
+      >
         <button
+          type="button"
+          role="tab"
+          :aria-selected="activeTab === 'reviews'"
           class="flex-1 py-3 rounded-full transition-all"
           :class="activeTab === 'reviews' ? 'bg-m-blue' : 'text-m-gray opacity-40'"
           @click="activeTab = 'reviews'"
@@ -107,6 +122,9 @@ watch(() => favoriteStore.favoritesVersion, () => {
           我的評分
         </button>
         <button
+          type="button"
+          role="tab"
+          :aria-selected="activeTab === 'favorites'"
           class="flex-1 py-3 rounded-full transition-all"
           :class="activeTab === 'favorites' ? 'bg-m-pink' : 'text-m-gray opacity-40'"
           @click="activeTab = 'favorites'"
@@ -118,29 +136,18 @@ watch(() => favoriteStore.favoritesVersion, () => {
       <!-- Content -->
       <div class="w-full flex flex-col gap-6">
         <template v-if="activeTab === 'reviews'">
-          <div class="relative">
-            <CommonInput
-              v-model="searchInput"
-              placeholder="搜尋我的紀錄（店名、飲品、評論）..."
-              :icon="searchInput ? '' : 'ph:magnifying-glass-bold'"
-              @enter="handleSearchNow"
-            />
-            <button
-              v-if="searchInput"
-              type="button"
-              aria-label="清除搜尋"
-              class="absolute right-6 top-1/2 -translate-y-1/2 flex items-center text-m-gray/50 hover:text-m-gray transition-colors"
-              @click="handleClearSearch"
-            >
-              <Icon
-                name="ph:x-circle-bold"
-                class="text-2xl"
-              />
-            </button>
-          </div>
+          <CommonInput
+            v-model="searchInput"
+            placeholder="搜尋我的紀錄（店名、飲品、評論）..."
+            icon="ph:magnifying-glass-bold"
+            is-clearable
+            @enter="handleSearchNow"
+            @clear="handleSearchNow"
+          />
 
+          <!-- 只有第一次載入顯示 spinner；之後重新查詢保留舊結果並淡化，避免畫面跳動 -->
           <div
-            v-if="isSearching"
+            v-if="isSearching && !myReviews"
             class="py-12 flex justify-center"
           >
             <Icon
@@ -150,7 +157,9 @@ watch(() => favoriteStore.favoritesVersion, () => {
           </div>
           <div
             v-else-if="myReviews && myReviews.reviews.length > 0"
-            class="flex flex-col gap-6"
+            class="flex flex-col gap-6 transition-opacity"
+            :class="{ 'opacity-50': isSearching }"
+            :aria-busy="isSearching"
           >
             <p
               v-if="keyword"
@@ -190,7 +199,7 @@ watch(() => favoriteStore.favoritesVersion, () => {
 
         <template v-else>
           <div
-            v-if="favoritesStatus === 'idle' || favoritesStatus === 'pending'"
+            v-if="favoritesStatus === 'idle' || (favoritesStatus === 'pending' && !myFavorites)"
             class="py-12 flex justify-center"
           >
             <Icon

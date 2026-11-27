@@ -13,6 +13,7 @@ const props = defineProps<{
   size?: 'sm' | 'md' | 'lg'
   isBubble?: boolean
   manual?: boolean
+  disabled?: boolean
   /** 回傳 false 代表中止轉場動畫 */
   asyncHandler?: () => Promise<boolean>
 }>()
@@ -22,6 +23,10 @@ const emit = defineEmits(['click'])
 const buttonRef = ref<HTMLButtonElement | null>(null)
 const overlayRef = ref<HTMLDivElement | null>(null)
 const isExpanding = ref(false)
+const isBusy = ref(false)
+
+// 等待 asyncHandler 或轉場期間鎖住按鈕，避免連點造成重複送出
+const isLocked = computed(() => props.disabled || isBusy.value || isExpanding.value)
 
 const colors = {
   blue: 'bg-m-blue text-m-gray',
@@ -98,8 +103,18 @@ const playTransition = () => {
 // Expose to parents
 defineExpose({ playTransition })
 
+const runAsyncHandler = async (handler: () => Promise<boolean>) => {
+  isBusy.value = true
+  try {
+    return await handler()
+  }
+  finally {
+    isBusy.value = false
+  }
+}
+
 const handleClick = async (e: MouseEvent) => {
-  if (isExpanding.value) return
+  if (isLocked.value) return
 
   if (props.manual) {
     emit('click', e)
@@ -107,7 +122,7 @@ const handleClick = async (e: MouseEvent) => {
   }
 
   if (props.asyncHandler) {
-    const result = await props.asyncHandler()
+    const result = await runAsyncHandler(props.asyncHandler)
     if (result === false) return
     await playTransition()
     return
@@ -123,7 +138,8 @@ const handleClick = async (e: MouseEvent) => {
   <div class="inline-block mx-auto">
     <button
       ref="buttonRef"
-      class="font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:scale-90 active:scale-90 origin-center"
+      :disabled="disabled || isBusy"
+      class="disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:scale-90 active:scale-90 origin-center"
       :class="[
         colors[variant || 'blue'],
         sizes[size || 'md'],

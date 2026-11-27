@@ -5,6 +5,7 @@ import type { Review } from '~/types/review'
 const uiStore = useUIStore()
 const userStore = useUserStore()
 const favoriteStore = useFavoriteStore()
+const route = useRoute()
 
 const props = defineProps<{
   review: Review
@@ -25,7 +26,11 @@ const handleEdit = () => {
 
 const isFavorited = computed(() => favoriteStore.isFavorited(props.review.id))
 
-const handleToggleFavorite = () => favoriteStore.toggleFavorite(props.review.id)
+// 未登入時愛心仍可見，點擊後引導登入並在登入後回到目前頁面
+const handleToggleFavorite = () => {
+  if (!userStore.isAuthenticated) return navigateTo(getLoginRoute(route.fullPath))
+  return favoriteStore.toggleFavorite(props.review.id)
+}
 </script>
 
 <template>
@@ -44,11 +49,11 @@ const handleToggleFavorite = () => favoriteStore.toggleFavorite(props.review.id)
 
       <div class="flex items-center gap-2">
         <button
-          v-if="userStore.isAuthenticated"
           type="button"
           class="flex items-center transition-transform hover:scale-110"
           :class="isFavorited ? 'text-red-300' : 'text-m-gray/40 hover:text-red-300'"
-          :aria-label="isFavorited ? '取消收藏' : '收藏'"
+          :aria-label="isFavorited ? '取消收藏' : userStore.isAuthenticated ? '收藏' : '登入後即可收藏'"
+          :title="userStore.isAuthenticated ? undefined : '登入後即可收藏'"
           :aria-pressed="isFavorited"
           @click="handleToggleFavorite"
         >
@@ -59,6 +64,7 @@ const handleToggleFavorite = () => favoriteStore.toggleFavorite(props.review.id)
         </button>
         <button
           v-if="editable"
+          type="button"
           class="text-sm text-m-cream-dark hover:text-m-purple-dark transition-colors"
           @click="handleEdit"
         >

@@ -5,8 +5,9 @@ const uiStore = useUIStore()
 const router = useRouter()
 
 const handleSearch = () => {
-  if (uiStore.searchQuery.trim()) {
-    router.push({ path: '/search', query: { q: uiStore.searchQuery } })
+  const keyword = uiStore.searchQuery.trim()
+  if (keyword) {
+    router.push({ path: '/search', query: { q: keyword } })
   }
 }
 
@@ -26,6 +27,7 @@ const handleCategoryClick = (category: string) => {
       v-model="uiStore.searchQuery"
       placeholder="搜尋飲品、店名或評論..."
       icon="ph:magnifying-glass-bold"
+      is-clearable
       class="w-full md:w-[400px]"
       @enter="handleSearch"
     />

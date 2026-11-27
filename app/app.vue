@@ -1,4 +1,11 @@
 <script setup lang="ts">
+const SITE_TITLE = 'Udrink 嗚！好喝 - 社群飲品評鑑平台'
+
+// 各頁用 useHead({ title }) 設定頁名，分頁標籤一眼就能分辨
+useHead({
+  titleTemplate: title => (title && title !== SITE_TITLE ? `${title}｜Udrink 嗚！好喝` : SITE_TITLE),
+})
+
 const userStore = useUserStore()
 const favoriteStore = useFavoriteStore()
 
